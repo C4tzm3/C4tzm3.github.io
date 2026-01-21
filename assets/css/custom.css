@@ -1,0 +1,35 @@
+:root {
+  --primary: #2c3e50;
+  --accent: #3498db;
+}
+
+body {
+  font-family: -apple-system, system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+.site-header {
+  border-bottom: 2px solid var(--accent);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.post-preview {
+  padding: 2rem 0;
+  border-bottom: 1px solid #e1e8ed;
+}
+
+.post-preview h2 a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.post-preview h2 a:hover {
+  color: var(--accent);
+}
+
+pre {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-left: 3px solid var(--accent);
+  overflow-x: auto;
+}

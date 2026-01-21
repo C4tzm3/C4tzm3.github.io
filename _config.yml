@@ -1,0 +1,36 @@
+# Site settings
+title: "Q4lz's Tech Blog"
+description: "CTF Writeups, Security Notes & Technical Documentation"
+baseurl: ""
+url: "https://Q4lz.github.io"
+
+# Build settings
+markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Collections
+collections:
+  posts:
+    output: true
+    permalink: /:categories/:year/:month/:day/:title/
+
+# Navigation
+header_pages:
+  - ctf.md
+  - notes.md
+  - projects.md
+  - about.md
+  - others.md
+
+# Pagination
+paginate: 10
+paginate_path: "/page:num/"
+
+# Exclude files
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
