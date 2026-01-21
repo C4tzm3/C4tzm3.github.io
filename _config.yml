@@ -1,12 +1,15 @@
 # Site settings
-title: "Q4lz's Tech Blog"
+title: "C4tzm3's Tech Blog"
 description: "CTF Writeups, Security Notes & Technical Documentation"
-baseurl: ""
-url: "https://C4tzm3.github.io"
+author: "C4tzm3"
+email: "your.email@example.com"
+baseurl: ""  # leave empty for user site
+url: "https://c4tzm3.github.io"
 
 # Build settings
 markdown: kramdown
 theme: minima
+highlighter: rouge  # ensures code blocks are highlighted
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
