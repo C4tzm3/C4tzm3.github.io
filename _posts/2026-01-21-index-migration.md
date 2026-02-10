@@ -1,13 +1,12 @@
 ---
 layout: post
-title: "Splunk Blue Team Series: Index Migration, Recovery & Internals (Sysmon & Security)"
+title: "Index Migration, Recovery & Internals"
 date: 2026-02-10
 categories: notes
 tags: [splunk, blueteam, dfir, sysmon, security, index, recovery]
 ---
 
-# Splunk Blue Team Series  
-## Index Migration, Recovery & Internals (Sysmon & Security)
+## Index Migration, Recovery & Internals 
 
 This post is part of the **Splunk Blue Team Series**, focusing on **data survivability** after detection is already in place.
 
