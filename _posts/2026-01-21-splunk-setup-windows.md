@@ -1,12 +1,12 @@
 ---
 layout: post
-title: "Complete Splunk Windows Endpoint & Forwarder Setup Guide"
+title: "Splunk Windows Endpoint & Forwarder Setup Guide"
 date: 2026-01-21
 categories: notes
 tags: [splunk, windows, forwarder, sysmon, security]
 ---
 
-# Complete Splunk Windows Endpoint & Forwarder Setup Guide
+# Splunk Windows Endpoint & Forwarder Setup Guide
 
 This is a **complete end-to-end guide** for setting up a Windows machine as a Splunk-monitored endpoint. You will:
 
