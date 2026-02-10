@@ -67,7 +67,9 @@ Use this if:
 - You want a clean backup
 - Index size is large
 
+
 On Splunk A (Source)
+```bash
 # Stop Splunk
 sudo /opt/splunk/bin/splunk stop
 
@@ -80,10 +82,15 @@ sudo tar -czf /tmp/security_backup.tar.gz security/
 
 # Start Splunk again
 sudo /opt/splunk/bin/splunk start
+```
+```bash
 Transfer backups to Splunk B
 scp /tmp/sysmon_backup.tar.gz root@splunkB_ip:/tmp/
 scp /tmp/security_backup.tar.gz root@splunkB_ip:/tmp/
+```
 On Splunk B (Destination)
+
+```bash
 # Create indexes first
 sudo -u splunk /opt/splunk/bin/splunk add index sysmon -auth admin:splunkadmin123!
 sudo -u splunk /opt/splunk/bin/splunk add index security -auth admin:splunkadmin123!
@@ -110,10 +117,13 @@ sudo -u splunk /opt/splunk/bin/splunk fsck repair --all-buckets-one-index --inde
 
 # Start Splunk
 sudo /opt/splunk/bin/splunk start
-Scenario 2: Direct Folder Copy (No Tar)
+```
+
+What if.. Direct Folder Copy (No Tar)?
 Use this if you already copied the folders manually
 (scp, WinSCP, rsync, FileZilla).
-Yes — this method is 100% valid.
+
+```bash
 # Create indexes
 sudo -u splunk /opt/splunk/bin/splunk add index sysmon -auth admin:splunkadmin123!
 sudo -u splunk /opt/splunk/bin/splunk add index security -auth admin:splunkadmin123!
@@ -139,41 +149,58 @@ sudo -u splunk /opt/splunk/bin/splunk fsck repair --all-buckets-one-index --inde
 
 # Start Splunk
 sudo /opt/splunk/bin/splunk start
-Verification
+```
+
+## Verification
 CLI
+```bash
 sudo -u splunk /opt/splunk/bin/splunk search "index=sysmon | stats count" -auth admin:splunkadmin123!
 sudo -u splunk /opt/splunk/bin/splunk search "index=security | stats count" -auth admin:splunkadmin123!
+```
 Web UI
+```bash
 index=sysmon | stats count by sourcetype
 index=security | stats count by sourcetype
-Common Errors & Fixes
+```
+
+# Common Errors & Fixes
 Index Exists but No Data
+```bash
 sudo -u splunk /opt/splunk/bin/splunk fsck repair --all-buckets-one-index --index-name=sysmon
+```
+
 fsck Permission Errors
+```bash
 sudo chown -R splunk:splunk /opt/splunk/var/lib/splunk/sysmon/
+```
 Searches Slow or Incomplete
 Fix:
 Stop Splunk → run fsck → start Splunk
-Why fsck Is Required (Splunk Internals)
-Splunk does not auto-discover copied index data.
-It relies on:
 
-Bucket metadata
-Time range registration
-Journal state
+Why fsck Is Required (Splunk Internals)??
+Splunk does not auto-discover copied index data.
+
+It relies on:
+- Bucket metadata
+- Time range registration
+- Journal state
+  
 When index folders are copied:
-Raw data exists ✅
-Splunk metadata does not ❌
+- Raw data exists 
+- Splunk metadata does not 
+
 fsck repair:
-Scans all buckets
-Rebuilds metadata
-Re-registers time ranges
-Makes data searchable again
+- Scans all buckets
+- Rebuilds metadata
+- Re-registers time ranges
+- Makes data searchable again
+
 Without fsck:
-Logs silently disappear
-DFIR timelines break
-Attacks become invisible
-Simplified Timeline
+- Logs silently disappear
+- DFIR timelines break
+- Attacks become invisible
+
+Simplified Flow TLDR
 1. Install Splunk
 2. Create indexes
 3. Stop Splunk
