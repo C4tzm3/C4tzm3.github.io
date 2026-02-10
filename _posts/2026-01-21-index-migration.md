@@ -6,7 +6,7 @@ categories: notes
 tags: [splunk, blueteam, dfir, sysmon, security, index, recovery]
 ---
 
-## Index Migration, Recovery & Internals 
+# Index Migration, Recovery & Internals 
 
 This post is part of the **Splunk Blue Team Series**, focusing on **data survivability** after detection is already in place.
 
@@ -19,9 +19,6 @@ It documents **real-world Splunk recovery scenarios** commonly faced by SOC and 
 ---
 
 ## Series Context
-
-**Previous post:**  
-- Windows Endpoint Telemetry with Splunk (4688, PowerShell, Sysmon, Forwarder)
 
 **This post focuses on:**  
 - Migrating Splunk indexes safely  
@@ -68,7 +65,7 @@ Use this if:
 - Index size is large
 
 
-On Splunk A (Source)
+## On Splunk A (Source)
 ```bash
 # Stop Splunk
 sudo /opt/splunk/bin/splunk stop
@@ -88,7 +85,7 @@ Transfer backups to Splunk B
 scp /tmp/sysmon_backup.tar.gz root@splunkB_ip:/tmp/
 scp /tmp/security_backup.tar.gz root@splunkB_ip:/tmp/
 ```
-On Splunk B (Destination)
+## On Splunk B (Destination)
 
 ```bash
 # Create indexes first
@@ -119,7 +116,7 @@ sudo -u splunk /opt/splunk/bin/splunk fsck repair --all-buckets-one-index --inde
 sudo /opt/splunk/bin/splunk start
 ```
 
-What if.. Direct Folder Copy (No Tar)?
+## What if.. Direct Folder Copy (No Tar)?
 Use this if you already copied the folders manually
 (scp, WinSCP, rsync, FileZilla).
 
@@ -163,13 +160,13 @@ index=sysmon | stats count by sourcetype
 index=security | stats count by sourcetype
 ```
 
-# Common Errors & Fixes
+## Common Errors & Fixes
 Index Exists but No Data
 ```bash
 sudo -u splunk /opt/splunk/bin/splunk fsck repair --all-buckets-one-index --index-name=sysmon
 ```
 
-fsck Permission Errors
+## fsck Permission Errors
 ```bash
 sudo chown -R splunk:splunk /opt/splunk/var/lib/splunk/sysmon/
 ```
@@ -200,7 +197,7 @@ Without fsck:
 - DFIR timelines break
 - Attacks become invisible
 
-Simplified Flow TLDR
+## Simplified Flow TLDR
 1. Install Splunk
 2. Create indexes
 3. Stop Splunk
