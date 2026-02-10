@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Splunk Blue Team Series: Index Migration, Recovery & Internals (Sysmon & Security)"
-date: 2026-01-22
+date: 2026-02-10
 categories: notes
 tags: [splunk, blueteam, dfir, sysmon, security, index, recovery]
 ---
@@ -52,10 +52,10 @@ Each index contains:
 
 ## CRITICAL RULES (Do Not Skip)
 
-⚠️ Splunk **must be stopped** before touching index folders  
-⚠️ Ownership **must be `splunk:splunk`**  
-⚠️ Indexes **must exist before restoring data**  
-⚠️ Always run Splunk commands as the **splunk user**
+- Splunk **must be stopped** before touching index folders  
+- Ownership **must be `splunk:splunk`**
+- Indexes **must exist before restoring data**
+- Always run Splunk commands as the **splunk user**
 
 Most failed recoveries are caused by ignoring one of these.
 
@@ -68,60 +68,77 @@ Use this if:
 - You want a clean backup
 - Index size is large
 
-### On Splunk A (Source)
-
-```bash
+On Splunk A (Source)
+# Stop Splunk
 sudo /opt/splunk/bin/splunk stop
+
+# Navigate to index directory
 cd /opt/splunk/var/lib/splunk/
 
+# Create backups
 sudo tar -czf /tmp/sysmon_backup.tar.gz sysmon/
 sudo tar -czf /tmp/security_backup.tar.gz security/
 
+# Start Splunk again
 sudo /opt/splunk/bin/splunk start
-Transfer to Splunk B:
+Transfer backups to Splunk B
 scp /tmp/sysmon_backup.tar.gz root@splunkB_ip:/tmp/
 scp /tmp/security_backup.tar.gz root@splunkB_ip:/tmp/
 On Splunk B (Destination)
+# Create indexes first
 sudo -u splunk /opt/splunk/bin/splunk add index sysmon -auth admin:splunkadmin123!
 sudo -u splunk /opt/splunk/bin/splunk add index security -auth admin:splunkadmin123!
 
+# Stop Splunk
 sudo /opt/splunk/bin/splunk stop
 
+# Remove empty index folders
 sudo rm -rf /opt/splunk/var/lib/splunk/sysmon/
 sudo rm -rf /opt/splunk/var/lib/splunk/security/
 
+# Extract backups
 cd /opt/splunk/var/lib/splunk/
 sudo tar -xzf /tmp/sysmon_backup.tar.gz
 sudo tar -xzf /tmp/security_backup.tar.gz
 
+# Fix ownership (CRITICAL)
 sudo chown -R splunk:splunk /opt/splunk/var/lib/splunk/sysmon/
 sudo chown -R splunk:splunk /opt/splunk/var/lib/splunk/security/
 
+# Repair indexes
 sudo -u splunk /opt/splunk/bin/splunk fsck repair --all-buckets-one-index --index-name=sysmon
 sudo -u splunk /opt/splunk/bin/splunk fsck repair --all-buckets-one-index --index-name=security
 
+# Start Splunk
 sudo /opt/splunk/bin/splunk start
 Scenario 2: Direct Folder Copy (No Tar)
-Use this if you already copied the folders manually (scp, WinSCP, rsync, FileZilla).
+Use this if you already copied the folders manually
+(scp, WinSCP, rsync, FileZilla).
 Yes — this method is 100% valid.
-
+# Create indexes
 sudo -u splunk /opt/splunk/bin/splunk add index sysmon -auth admin:splunkadmin123!
 sudo -u splunk /opt/splunk/bin/splunk add index security -auth admin:splunkadmin123!
 
+# Stop Splunk
 sudo /opt/splunk/bin/splunk stop
 
+# Remove empty folders
 sudo rm -rf /opt/splunk/var/lib/splunk/sysmon/
 sudo rm -rf /opt/splunk/var/lib/splunk/security/
 
+# Move copied folders
 sudo mv /tmp/sysmon /opt/splunk/var/lib/splunk/
 sudo mv /tmp/security /opt/splunk/var/lib/splunk/
 
+# Fix ownership
 sudo chown -R splunk:splunk /opt/splunk/var/lib/splunk/sysmon/
 sudo chown -R splunk:splunk /opt/splunk/var/lib/splunk/security/
 
+# Repair indexes
 sudo -u splunk /opt/splunk/bin/splunk fsck repair --all-buckets-one-index --index-name=sysmon
 sudo -u splunk /opt/splunk/bin/splunk fsck repair --all-buckets-one-index --index-name=security
 
+# Start Splunk
 sudo /opt/splunk/bin/splunk start
 Verification
 CLI
@@ -132,39 +149,12 @@ index=sysmon | stats count by sourcetype
 index=security | stats count by sourcetype
 Common Errors & Fixes
 Index Exists but No Data
-Fix:
-splunk fsck repair --all-buckets-one-index --index-name=sysmon
+sudo -u splunk /opt/splunk/bin/splunk fsck repair --all-buckets-one-index --index-name=sysmon
 fsck Permission Errors
-Fix:
 sudo chown -R splunk:splunk /opt/splunk/var/lib/splunk/sysmon/
 Searches Slow or Incomplete
 Fix:
 Stop Splunk → run fsck → start Splunk
-Single Reusable Migration Script
-Save as migrate_indexes.sh
-#!/bin/bash
-
-SPLUNK_HOME="/opt/splunk"
-INDEX_PATH="$SPLUNK_HOME/var/lib/splunk"
-INDEXES=("sysmon" "security")
-AUTH="admin:splunkadmin123!"
-
-sudo $SPLUNK_HOME/bin/splunk stop
-
-for index in "${INDEXES[@]}"; do
-  sudo -u splunk $SPLUNK_HOME/bin/splunk add index $index -auth $AUTH
-  sudo rm -rf $INDEX_PATH/$index
-  sudo mv /tmp/$index $INDEX_PATH/
-done
-
-sudo chown -R splunk:splunk $INDEX_PATH
-
-for index in "${INDEXES[@]}"; do
-  sudo -u splunk $SPLUNK_HOME/bin/splunk fsck repair \
-    --all-buckets-one-index --index-name=$index
-done
-
-sudo $SPLUNK_HOME/bin/splunk start
 Why fsck Is Required (Splunk Internals)
 Splunk does not auto-discover copied index data.
 It relies on:
@@ -193,3 +183,4 @@ Simplified Timeline
 6. Run fsck
 7. Start Splunk
 8. Verify data
+
