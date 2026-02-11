@@ -11,6 +11,10 @@ tagline: "Cybersecurity Notes, CTF Writeups & Technical Guides"
 keywords: "CTF, cybersecurity, Splunk, security notes, writeups, penetration testing, SIEM, security research"
 lang: "en_US"
 
+# Google Search Console verification
+webmaster_verifications:
+  google: "zrh2dN1obfAn0xJP20vY9toJ0EayCQP1vB43nhyhTbA"
+
 # Social links for SEO
 twitter:
   username: C4tzm3
