@@ -2,7 +2,7 @@
 layout: post
 title: "Index Migration, Recovery & Internals"
 date: 2026-02-10
-categories: notes
+categories: [notes, splunk]
 tags: [splunk, blueteam, dfir, sysmon, security, index, recovery]
 ---
 
