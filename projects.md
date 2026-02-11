@@ -4,8 +4,6 @@ title: Projects
 permalink: /projects/
 ---
 
-# Projects
-
 Showcase of my technical projects and contributions.
 
 {% for post in site.categories.projects %}

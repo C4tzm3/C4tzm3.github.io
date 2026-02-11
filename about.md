@@ -4,8 +4,6 @@ title: About
 permalink: /about/
 ---
 
-# About
-
 This blog documents my journey in cybersecurity, focusing on CTF challenges, security research, and technical documentation.
 
 ## Focus Areas

@@ -4,8 +4,6 @@ title: CTF Writeups
 permalink: /ctf/
 ---
 
-# CTF Writeups
-
 Collection of my Capture The Flag challenge writeups and solutions.
 
 {% for post in site.categories.ctf %}

@@ -4,8 +4,6 @@ title: Others
 permalink: /others/
 ---
 
-# Others
-
 Miscellaneous posts and content.
 
 {% for post in site.categories.others %}
