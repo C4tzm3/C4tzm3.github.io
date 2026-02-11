@@ -2,7 +2,7 @@
 layout: post
 title: "Splunk Windows Endpoint & Forwarder Setup Guide"
 date: 2026-01-21
-categories: notes
+categories: [notes, splunk]
 tags: [splunk, windows, forwarder, sysmon, security]
 ---
 

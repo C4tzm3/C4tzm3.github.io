@@ -2,7 +2,7 @@
 layout: post
 title: "Splunk Deployment Server and Server Classes Guide"
 date: 2026-01-21
-categories: notes
+categories: [notes, splunk]
 tags: [splunk, deployment, management]
 ---
 

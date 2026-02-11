@@ -2,7 +2,7 @@
 layout: post
 title: "Splunk Universal Forwarder Setup - Linux"
 date: 2026-01-21
-categories: notes
+categories: [notes, splunk]
 tags: [splunk, linux, forwarder]
 ---
 

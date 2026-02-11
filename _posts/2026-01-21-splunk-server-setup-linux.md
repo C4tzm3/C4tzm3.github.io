@@ -2,7 +2,7 @@
 layout: post
 title: "Splunk Server Setup Guide - Linux"
 date: 2026-01-21
-categories: notes
+categories: [notes, splunk]
 tags: [splunk, linux, security, siem]
 ---
 
