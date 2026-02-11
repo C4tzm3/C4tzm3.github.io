@@ -4,8 +4,6 @@ title: Notes
 permalink: /notes/
 ---
 
-# Technical Notes
-
 My collection of technical notes, tutorials, and documentation organized by category.
 
 ## 📁 Categories
