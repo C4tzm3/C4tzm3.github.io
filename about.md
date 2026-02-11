@@ -4,17 +4,16 @@ title: About
 permalink: /about/
 ---
 
-# About Me
+# About
 
-Write your introduction here. Share your background, interests, and expertise in cybersecurity, CTF challenges, and technical projects.
+This blog documents my journey in cybersecurity, focusing on CTF challenges, security research, and technical documentation.
 
-## Skills
-- Security Analysis
-- CTF Challenges
-- Splunk Administration
-- Linux/Windows Systems
+## Focus Areas
+- Security Analysis & Research
+- CTF Competitions & Writeups
+- SIEM Administration (Splunk)
+- System Administration (Linux/Windows)
+- Penetration Testing
 
-## Contact
-- Email: haiqal2721@example.com
-- GitHub: [C4tzum3](https://github.com/C4tzum3)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
+## Content
+This site contains technical notes, guides, and writeups intended for educational purposes and knowledge sharing within the cybersecurity community.

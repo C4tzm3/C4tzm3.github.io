@@ -2,7 +2,7 @@
 title: "C4tzm3's Tech Blog"
 description: "CTF Writeups, Security Notes & Technical Documentation. Learn about cybersecurity, Splunk administration, and security research."
 author: "C4tzm3"
-email: "haiqal2721@gmail.com"
+email: ""  # Email hidden for privacy
 baseurl: ""  # leave empty for user site
 url: "https://c4tzm3.github.io"
 
@@ -15,9 +15,7 @@ lang: "en_US"
 webmaster_verifications:
   google: "zrh2dN1obfAn0xJP20vY9toJ0EayCQP1vB43nhyhTbA"
 
-# Social links for SEO
-twitter:
-  username: C4tzm3
+# Social links for SEO (keeping GitHub for code sharing only)
 github_username: C4tzm3
 
 # Build settings
