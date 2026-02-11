@@ -9,9 +9,10 @@ This blog documents my journey in cybersecurity, focusing on CTF challenges, sec
 ## Focus Areas
 - Security Analysis & Research
 - CTF Competitions & Writeups
-- SIEM Administration (Splunk)
-- System Administration (Linux/Windows)
-- Penetration Testing
+- Splunk
+- DFIR
+
+
 
 ## Content
-This site contains technical notes, guides, and writeups intended for educational purposes and knowledge sharing within the cybersecurity community.
+This site contains my technical notes, guides, and writeups intended for educational purposes and knowledge sharing within the cybersecurity community.
