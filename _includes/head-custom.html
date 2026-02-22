@@ -17,21 +17,22 @@
   })();
 </script>
 
-<!-- Dark mode toggle button (injected after DOM ready) -->
+<!-- Dark mode toggle logic -->
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    var btn = document.createElement('button');
-    btn.id = 'theme-toggle';
-    btn.setAttribute('aria-label', 'Toggle dark mode');
+    var btn = document.getElementById('theme-toggle');
+    var icon = document.getElementById('theme-icon');
+    if (!btn || !icon) return;
+
     var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    btn.innerHTML = isDark ? '&#9728;' : '&#9790;';
+    icon.innerHTML = isDark ? '&#9728;' : '&#9790;';
+
     btn.addEventListener('click', function() {
       var current = document.documentElement.getAttribute('data-theme');
       var next = current === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
-      btn.innerHTML = next === 'dark' ? '&#9728;' : '&#9790;';
+      icon.innerHTML = next === 'dark' ? '&#9728;' : '&#9790;';
     });
-    document.body.appendChild(btn);
   });
 </script>

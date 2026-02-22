@@ -334,37 +334,27 @@ tr:nth-child(even) td {
 }
 
 /* ============================================================
-   Dark Mode Toggle Button
+   Dark Mode Toggle Button (in nav header)
    ============================================================ */
 
-#theme-toggle {
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  z-index: 9999;
-  background-color: var(--color-bg-secondary);
-  color: var(--color-text);
+.theme-toggle-btn {
+  background: none;
   border: 1px solid var(--color-border);
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
+  border-radius: 6px;
+  color: var(--color-text);
   cursor: pointer;
-  font-size: 1.3rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--shadow-md);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.25s ease, border-color 0.25s ease;
-  line-height: 1;
+  font-size: 1rem;
+  padding: 0.2rem 0.55rem;
+  margin-left: 0.75rem;
+  line-height: 1.4;
+  vertical-align: middle;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
-#theme-toggle:hover {
-  transform: scale(1.12);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
-
-[data-theme="dark"] #theme-toggle:hover {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+.theme-toggle-btn:hover {
+  background-color: var(--color-bg-secondary);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 /* ============================================================
@@ -406,14 +396,6 @@ tr:nth-child(even) td {
    ============================================================ */
 
 @media (max-width: 600px) {
-  #theme-toggle {
-    bottom: 1rem;
-    right: 1rem;
-    width: 38px;
-    height: 38px;
-    font-size: 1.1rem;
-  }
-
   .post-meta {
     flex-direction: column;
     align-items: flex-start;
