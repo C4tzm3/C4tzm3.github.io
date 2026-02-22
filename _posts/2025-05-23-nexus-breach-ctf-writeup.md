@@ -1,10 +1,10 @@
 ---
 layout: post
-title: "HTB CTF - Phantom Breach: Nexus OSS Attack Analysis"
-date: 2026-02-20
+title: "The Nexus Breach: Forensics Challenge — Global Cyber Skills Benchmark CTF 2025"
+date: 2025-05-23
 categories: [ctf]
-tags: [htb, pcap, wireshark, java, reverse-engineering, aes, nexus, network-forensics, dfir]
-description: "Full writeup for the Phantom Breach CTF challenge - analyzing a malicious PCAP to uncover a Nexus OSS supply chain attack involving Java malware, AES-encrypted C2 traffic, and multi-layer obfuscated reverse shell payloads."
+tags: [pcap, wireshark, java, reverse-engineering, aes, nexus, network-forensics, dfir]
+description: "Full writeup for The Nexus Breach forensics challenge from the Global Cyber Skills Benchmark CTF 2025 — analyzing a malicious PCAP to uncover a Nexus OSS supply chain attack involving Java malware, AES-encrypted C2 traffic, and multi-layer obfuscated reverse shell payloads."
 ---
 
 A forensics challenge involving network traffic analysis, Java reverse engineering, and AES-encrypted C2 communication targeting a Nexus OSS repository manager.
