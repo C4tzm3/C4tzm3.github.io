@@ -1,0 +1,167 @@
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {%- seo -%}
+  <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
+  {%- feed_meta -%}
+
+  <!-- Google Search Console -->
+  <meta name="google-site-verification" content="zrh2dN1obfAn0xJP20vY9toJ0EayCQP1vB43nhyhTbA" />
+
+  <!-- Google Fonts: Inter + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Apply saved theme BEFORE paint to prevent flash -->
+  <script>
+    (function() {
+      var t = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <!-- Sync toggle button icon after DOM ready -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var btn = document.getElementById('theme-toggle');
+      if (btn) btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\u2600' : '\u263E';
+    });
+  </script>
+
+  <!-- Tokyo Night Theme -->
+  <style>
+    /* ── Variables: Light ─────────────────────────────── */
+    :root {
+      --bg: #ffffff;
+      --bg2: #f0f0f8;
+      --bg3: #e8e8f0;
+      --text: #343b58;
+      --text-muted: #8c8fa1;
+      --border: #d8d9e0;
+      --link: #2959aa;
+      --link-hover: #7c3aed;
+      --accent: #2959aa;
+      --header-bg: #ffffff;
+      --footer-bg: #f5f5fb;
+      --code-bg: #f0f0f8;
+      --code-text: #343b58;
+      --pre-bg: #f0f0f8;
+      --pre-border: #2959aa;
+      --quote-bg: #ececf8;
+      --quote-border: #7c3aed;
+      --tag-bg: #e4e6f8;
+      --tag-text: #2959aa;
+      --shadow-sm: 0 1px 4px rgba(41,89,170,.08);
+      --shadow-md: 0 4px 16px rgba(41,89,170,.12);
+      --radius: 8px;
+    }
+
+    /* ── Variables: Dark (Tokyo Night) ───────────────── */
+    [data-theme="dark"] {
+      --bg: #1a1b2e;
+      --bg2: #24283b;
+      --bg3: #292e42;
+      --text: #c0caf5;
+      --text-muted: #565f89;
+      --border: #292e42;
+      --link: #7aa2f7;
+      --link-hover: #bb9af7;
+      --accent: #7aa2f7;
+      --header-bg: #1f2335;
+      --footer-bg: #1f2335;
+      --code-bg: #1f2335;
+      --code-text: #9ece6a;
+      --pre-bg: #1f2335;
+      --pre-border: #7aa2f7;
+      --quote-bg: #1f2335;
+      --quote-border: #bb9af7;
+      --tag-bg: #292e42;
+      --tag-text: #7aa2f7;
+      --shadow-sm: 0 1px 4px rgba(0,0,0,.4);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.5);
+    }
+
+    /* ── Base ─────────────────────────────────────────── */
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.78;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1,h2,h3,h4,h5,h6 { font-family:'Inter',sans-serif; font-weight:700; letter-spacing:-0.4px; color:var(--text); line-height:1.3; }
+    a { color:var(--link); text-decoration:none; transition:color 0.15s ease; }
+    a:hover { color:var(--link-hover); }
+    hr { border:none; border-top:1px solid var(--border); margin:2.5rem 0; }
+
+    /* ── Force dark over Minima's hard-coded colours ──── */
+    [data-theme="dark"] body            { background-color:#1a1b2e !important; color:#c0caf5 !important; }
+    [data-theme="dark"] .page-content,
+    [data-theme="dark"] .wrapper        { background-color:#1a1b2e !important; }
+    [data-theme="dark"] .site-header    { background-color:#1f2335 !important; border-bottom-color:#292e42 !important; }
+    [data-theme="dark"] .site-footer    { background-color:#1f2335 !important; border-top-color:#292e42 !important; color:#565f89 !important; }
+    [data-theme="dark"] .site-footer a  { color:#565f89 !important; }
+    [data-theme="dark"] h1,[data-theme="dark"] h2,[data-theme="dark"] h3,
+    [data-theme="dark"] h4,[data-theme="dark"] h5,[data-theme="dark"] h6 { color:#c0caf5 !important; }
+    [data-theme="dark"] p,[data-theme="dark"] li,[data-theme="dark"] span { color:#c0caf5; }
+    [data-theme="dark"] a               { color:#7aa2f7 !important; }
+    [data-theme="dark"] a:visited       { color:#bb9af7 !important; }
+    [data-theme="dark"] a:hover         { color:#bb9af7 !important; }
+    [data-theme="dark"] pre             { background-color:#1f2335 !important; border-color:#292e42 !important; border-left-color:#7aa2f7 !important; color:#c0caf5 !important; }
+    [data-theme="dark"] code            { background-color:#1f2335 !important; color:#9ece6a !important; }
+    [data-theme="dark"] pre code        { background:none !important; color:#c0caf5 !important; }
+    [data-theme="dark"] blockquote      { background-color:#1f2335 !important; border-left-color:#bb9af7 !important; color:#8b95c9 !important; }
+    [data-theme="dark"] blockquote p    { color:#8b95c9 !important; }
+    [data-theme="dark"] table th        { background-color:#24283b !important; color:#c0caf5 !important; border-color:#292e42 !important; }
+    [data-theme="dark"] table td        { background-color:#1a1b2e !important; color:#c0caf5 !important; border-color:#292e42 !important; }
+    [data-theme="dark"] tr:nth-child(even) td { background-color:#1f2335 !important; }
+
+    /* ── Header ───────────────────────────────────────── */
+    .site-header { background-color:var(--header-bg) !important; border-bottom:1px solid var(--border) !important; border-top:3px solid #7aa2f7 !important; box-shadow:var(--shadow-sm); transition:background-color 0.3s ease; }
+    .site-title  { font-weight:800 !important; letter-spacing:-0.5px; background:linear-gradient(90deg,#7aa2f7,#bb9af7); -webkit-background-clip:text !important; -webkit-text-fill-color:transparent !important; background-clip:text !important; }
+    .site-title:hover { text-decoration:none !important; opacity:0.8; }
+    .page-link   { color:var(--text) !important; font-weight:500; font-size:0.9rem; transition:color 0.15s ease; }
+    .page-link:hover { color:var(--accent) !important; text-decoration:none; }
+
+    /* ── Footer ───────────────────────────────────────── */
+    .site-footer { background-color:var(--footer-bg) !important; border-top:1px solid var(--border) !important; color:var(--text-muted) !important; transition:background-color 0.3s ease; }
+
+    /* ── Post meta ────────────────────────────────────── */
+    .post-meta { color:var(--text-muted) !important; font-size:0.85rem; font-weight:500; display:flex; align-items:center; flex-wrap:wrap; gap:0.4rem; }
+
+    /* ── Reading time badge ───────────────────────────── */
+    .reading-time { display:inline-flex; align-items:center; background:var(--tag-bg); color:var(--tag-text); border:1px solid var(--border); border-radius:20px; font-size:0.75rem; font-weight:600; padding:0.15em 0.75em; margin-left:0.25rem; transition:all 0.3s ease; }
+
+    /* ── Code ─────────────────────────────────────────── */
+    code { font-family:'JetBrains Mono','Fira Code','Consolas',monospace; font-size:0.855em; background-color:var(--code-bg) !important; color:var(--code-text) !important; border-radius:5px; padding:0.15em 0.45em; }
+    pre  { font-family:'JetBrains Mono','Fira Code','Consolas',monospace; background-color:var(--pre-bg) !important; border:1px solid var(--border) !important; border-left:4px solid var(--pre-border) !important; border-radius:var(--radius) !important; padding:1.25rem 1.5rem !important; overflow-x:auto; font-size:0.875rem; line-height:1.65; box-shadow:var(--shadow-sm); transition:all 0.3s ease; }
+    pre code { background:none !important; padding:0 !important; color:inherit !important; font-size:inherit; }
+
+    /* ── Blockquote ───────────────────────────────────── */
+    blockquote { border-left:4px solid var(--quote-border) !important; background-color:var(--quote-bg) !important; margin:1.75rem 0; padding:1rem 1.5rem !important; border-radius:0 var(--radius) var(--radius) 0; color:var(--text-muted) !important; font-style:italic; }
+    blockquote p { margin:0; color:var(--text-muted) !important; }
+
+    /* ── Tables ───────────────────────────────────────── */
+    table { border-collapse:collapse; width:100%; margin:1.5rem 0; font-size:0.9rem; }
+    th { background-color:var(--bg2); color:var(--text); font-weight:600; padding:0.75rem 1rem; border:1px solid var(--border); text-align:left; }
+    td { padding:0.65rem 1rem; border:1px solid var(--border); color:var(--text); background-color:var(--bg); }
+    tr:nth-child(even) td { background-color:var(--bg2); }
+
+    /* ── Post previews ────────────────────────────────── */
+    .post-preview { padding:1.75rem 0; border-bottom:1px solid var(--border); }
+    .post-preview:last-child { border-bottom:none; }
+    .post-preview h2 { font-weight:700; font-size:1.15rem; letter-spacing:-0.3px; margin-bottom:0.35rem; }
+    .post-preview h2 a { color:var(--text) !important; transition:color 0.15s ease; }
+    .post-preview h2 a:hover { color:var(--accent) !important; }
+
+    /* ── Images ───────────────────────────────────────── */
+    .post-content img { border-radius:var(--radius); box-shadow:var(--shadow-md); max-width:100%; border:1px solid var(--border); margin:1.25rem 0; display:block; }
+
+    /* ── Dark mode toggle button ──────────────────────── */
+    .theme-toggle-btn { background:var(--bg2); border:1px solid var(--border); border-radius:6px; color:var(--text); cursor:pointer; font-size:1rem; padding:0.2rem 0.6rem; margin-left:0.75rem; line-height:1.4; vertical-align:middle; transition:all 0.2s ease; }
+    .theme-toggle-btn:hover { background:var(--bg3); border-color:var(--accent); color:var(--accent); }
+  </style>
+</head>
