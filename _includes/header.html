@@ -1,22 +1,14 @@
 <header class="site-header" role="banner">
-  <div class="wrapper">
+  <div class="wrapper site-nav-wrap">
     <a class="site-title" rel="author" href="{{ "/" | relative_url }}">C4tzm3</a>
-  </div>
 
-  <div class="hdr-right">
-    <a class="page-link about-link" href="/about/">About</a>
-
-    <button class="burger-btn" id="burger-btn" aria-label="Open menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
-
-    <nav class="burger-nav" id="burger-nav" aria-hidden="true">
-      <a class="burger-link" href="/ctf/">CTF Writeups</a>
-      <a class="burger-link" href="/notes/">Notes</a>
-      <a class="burger-link" href="/projects/">Projects</a>
-      <a class="burger-link" href="/others/">Others</a>
-      <div class="burger-divider"></div>
-      <button class="burger-theme-btn" id="theme-toggle"
+    <nav class="site-nav-links">
+      <a class="page-link" href="/ctf/">CTF</a>
+      <a class="page-link" href="/notes/">Notes</a>
+      <a class="page-link" href="/projects/">Projects</a>
+      <a class="page-link" href="/others/">Others</a>
+      <a class="page-link" href="/about/">About</a>
+      <button class="theme-btn" id="theme-toggle"
         onclick="(function(b){
           var h=document.documentElement;
           var n=h.getAttribute('data-theme')==='dark'?'light':'dark';
@@ -24,159 +16,62 @@
           localStorage.setItem('theme',n);
           b.querySelector('.t-icon').textContent=n==='dark'?'\u2600':'\u263E';
         })(this)">
-        <span class="t-icon">&#9790;</span> Theme
+        <span class="t-icon">&#9790;</span>
       </button>
     </nav>
   </div>
 </header>
 
 <style>
-/* ── Header: flex row across full width ─── */
-.site-header {
-  display: flex !important;
-  align-items: center !important;
-}
-/* Wrapper (C4tzm3 side): grows to fill space, no auto centering */
-.site-header > .wrapper {
-  flex: 1 1 auto !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  max-width: none !important;
-}
-/* Right side: sits at screen edge */
-.hdr-right {
-  flex: 0 0 auto;
-  padding-right: 2rem;
-  position: relative;
+.site-nav-wrap {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  justify-content: space-between;
 }
-.about-link {
-  font-weight: 500;
-  font-size: 0.9rem;
-  color: var(--text) !important;
-  transition: color 0.15s ease;
-}
-.about-link:hover { color: var(--accent) !important; text-decoration: none; }
-
-/* ── Burger button ─────────────────────── */
-.burger-btn {
+.site-nav-links {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5px;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 7px 8px;
-  cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease;
+  align-items: center;
+  gap: 0.25rem;
 }
-.burger-btn span {
-  display: block;
-  width: 20px;
-  height: 2px;
-  background: var(--text);
-  border-radius: 2px;
-  transition: background 0.2s ease;
-}
-.burger-btn:hover { border-color: var(--accent); background: var(--bg2); }
-.burger-btn:hover span { background: var(--accent); }
-.burger-btn.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.burger-btn.active span:nth-child(2) { opacity: 0; }
-.burger-btn.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-/* ── Dropdown nav ──────────────────────── */
-.burger-nav {
-  display: none;
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  background: var(--header-bg);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 0.5rem;
-  min-width: 190px;
-  box-shadow: var(--shadow-md);
-  z-index: 999;
-  flex-direction: column;
-}
-.burger-nav.open { display: flex; }
-
-.burger-link {
-  display: block;
-  padding: 0.55rem 0.85rem;
-  border-radius: 6px;
+.site-nav-links .page-link {
   color: var(--text) !important;
   font-size: 0.9rem;
   font-weight: 500;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
   transition: background 0.15s ease, color 0.15s ease;
   text-decoration: none !important;
 }
-.burger-link:hover { background: var(--bg2); color: var(--accent) !important; }
-
-.burger-divider {
-  height: 1px;
-  background: var(--border);
-  margin: 0.4rem 0.5rem;
+.site-nav-links .page-link:hover {
+  background: var(--bg2);
+  color: var(--accent) !important;
 }
-
-.burger-theme-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 0.55rem 0.85rem;
-  border-radius: 6px;
+.theme-btn {
   background: none;
-  border: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
   color: var(--text);
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.25rem 0.55rem;
   cursor: pointer;
-  transition: background 0.15s ease;
-  text-align: left;
+  margin-left: 0.25rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  line-height: 1.4;
 }
-.burger-theme-btn:hover { background: var(--bg2); color: var(--accent); }
-
-/* Dark mode overrides */
-[data-theme="dark"] .burger-btn span { background: #c0caf5; }
-[data-theme="dark"] .burger-nav { background: #1f2335; border-color: #292e42; }
-[data-theme="dark"] .burger-link { color: #c0caf5 !important; }
-[data-theme="dark"] .burger-link:hover { background: #292e42; color: #7aa2f7 !important; }
-[data-theme="dark"] .burger-theme-btn { color: #c0caf5; }
-[data-theme="dark"] .burger-theme-btn:hover { background: #292e42; color: #7aa2f7; }
-[data-theme="dark"] .about-link { color: #c0caf5 !important; }
-[data-theme="dark"] .about-link:hover { color: #7aa2f7 !important; }
+.theme-btn:hover {
+  border-color: var(--accent);
+  background: var(--bg2);
+  color: var(--accent);
+}
+[data-theme="dark"] .site-nav-links .page-link { color: #c0caf5 !important; }
+[data-theme="dark"] .site-nav-links .page-link:hover { background: #292e42; color: #7aa2f7 !important; }
+[data-theme="dark"] .theme-btn { color: #c0caf5; border-color: #292e42; }
+[data-theme="dark"] .theme-btn:hover { background: #292e42; color: #7aa2f7; }
 </style>
 
 <script>
-  (function() {
-    var btn  = document.getElementById('burger-btn');
-    var nav  = document.getElementById('burger-nav');
-    var icon = document.querySelector('#theme-toggle .t-icon');
-
-    // Sync theme icon
-    if (icon) icon.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\u2600' : '\u263E';
-
-    // Toggle menu
-    btn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      var open = nav.classList.toggle('open');
-      btn.classList.toggle('active', open);
-      btn.setAttribute('aria-expanded', open);
-      nav.setAttribute('aria-hidden', !open);
-    });
-
-    // Close on outside click
-    document.addEventListener('click', function(e) {
-      if (!nav.contains(e.target) && e.target !== btn) {
-        nav.classList.remove('open');
-        btn.classList.remove('active');
-        btn.setAttribute('aria-expanded', false);
-        nav.setAttribute('aria-hidden', true);
-      }
-    });
-  })();
+(function() {
+  var icon = document.querySelector('#theme-toggle .t-icon');
+  if (icon) icon.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\u2600' : '\u263E';
+})();
 </script>

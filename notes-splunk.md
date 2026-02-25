@@ -11,12 +11,12 @@ Complete guides and notes for Splunk deployment, configuration, and management.
 <ul class="post-list">
 {% for post in site.categories.splunk %}
   <li>
-    <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
     <h3>
       <a class="post-link" href="{{ post.url | relative_url }}">
         {{ post.title | escape }}
       </a>
     </h3>
+    <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
     {% if post.excerpt %}
       <p>{{ post.excerpt | strip_html | truncatewords: 30 }}</p>
     {% endif %}
