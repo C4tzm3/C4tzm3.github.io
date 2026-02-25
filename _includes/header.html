@@ -1,43 +1,52 @@
 <header class="site-header" role="banner">
-  <div class="wrapper hdr-wrap">
+  <div class="wrapper">
     <a class="site-title" rel="author" href="{{ "/" | relative_url }}">C4tzm3</a>
+  </div>
 
-    <div class="hdr-right">
-      <a class="page-link about-link" href="/about/">About</a>
+  <div class="hdr-right">
+    <a class="page-link about-link" href="/about/">About</a>
 
-      <button class="burger-btn" id="burger-btn" aria-label="Open menu" aria-expanded="false">
-        <span></span><span></span><span></span>
+    <button class="burger-btn" id="burger-btn" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="burger-nav" id="burger-nav" aria-hidden="true">
+      <a class="burger-link" href="/ctf/">CTF Writeups</a>
+      <a class="burger-link" href="/notes/">Notes</a>
+      <a class="burger-link" href="/projects/">Projects</a>
+      <a class="burger-link" href="/others/">Others</a>
+      <div class="burger-divider"></div>
+      <button class="burger-theme-btn" id="theme-toggle"
+        onclick="(function(b){
+          var h=document.documentElement;
+          var n=h.getAttribute('data-theme')==='dark'?'light':'dark';
+          h.setAttribute('data-theme',n);
+          localStorage.setItem('theme',n);
+          b.querySelector('.t-icon').textContent=n==='dark'?'\u2600':'\u263E';
+        })(this)">
+        <span class="t-icon">&#9790;</span> Theme
       </button>
-
-      <nav class="burger-nav" id="burger-nav" aria-hidden="true">
-        <a class="burger-link" href="/ctf/">CTF Writeups</a>
-        <a class="burger-link" href="/notes/">Notes</a>
-        <a class="burger-link" href="/projects/">Projects</a>
-        <a class="burger-link" href="/others/">Others</a>
-        <div class="burger-divider"></div>
-        <button class="burger-theme-btn" id="theme-toggle"
-          onclick="(function(b){
-            var h=document.documentElement;
-            var n=h.getAttribute('data-theme')==='dark'?'light':'dark';
-            h.setAttribute('data-theme',n);
-            localStorage.setItem('theme',n);
-            b.querySelector('.t-icon').textContent=n==='dark'?'\u2600':'\u263E';
-          })(this)">
-          <span class="t-icon">&#9790;</span> Theme
-        </button>
-      </nav>
-    </div>
+    </nav>
   </div>
 </header>
 
 <style>
-/* ── Header layout ─────────────────────── */
-.hdr-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* ── Header: flex row across full width ─── */
+.site-header {
+  display: flex !important;
+  align-items: center !important;
 }
+/* Wrapper (C4tzm3 side): grows to fill space, no auto centering */
+.site-header > .wrapper {
+  flex: 1 1 auto !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  max-width: none !important;
+}
+/* Right side: sits at screen edge */
 .hdr-right {
+  flex: 0 0 auto;
+  padding-right: 2rem;
   position: relative;
   display: flex;
   align-items: center;
