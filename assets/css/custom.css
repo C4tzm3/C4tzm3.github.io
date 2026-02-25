@@ -1,81 +1,92 @@
 /* ============================================================
-   CSS Custom Properties — Light & Dark Theme Variables
+   TOKYO NIGHT THEME
+   Dark: deep indigo bg, blue/purple accents
+   Light: clean white with Tokyo blue accents
    ============================================================ */
 
+/* ── Variables ─────────────────────────────────────────────── */
+
 :root {
-  --color-bg: #ffffff;
-  --color-bg-secondary: #f6f8fa;
-  --color-text: #1a1a2e;
-  --color-text-muted: #6b7280;
-  --color-border: #e5e7eb;
-  --color-link: #2563eb;
-  --color-link-hover: #1d4ed8;
-  --color-accent: #3b82f6;
-  --color-header-bg: #ffffff;
-  --color-footer-bg: #f9fafb;
-  --color-code-bg: #f6f8fa;
-  --color-code-text: #24292e;
-  --color-pre-bg: #f6f8fa;
-  --color-blockquote-border: #3b82f6;
-  --color-blockquote-bg: #eff6ff;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
-  --radius: 8px;
+  --bg:           #ffffff;
+  --bg2:          #f0f0f8;
+  --bg3:          #e8e8f0;
+  --text:         #343b58;
+  --text-muted:   #8c8fa1;
+  --border:       #d8d9e0;
+  --link:         #2959aa;
+  --link-hover:   #7c3aed;
+  --accent:       #2959aa;
+  --accent2:      #7c3aed;
+  --header-bg:    #ffffff;
+  --footer-bg:    #f5f5fb;
+  --code-bg:      #f0f0f8;
+  --code-text:    #343b58;
+  --pre-bg:       #f0f0f8;
+  --pre-border:   #2959aa;
+  --quote-bg:     #ececf8;
+  --quote-border: #7c3aed;
+  --tag-bg:       #e4e6f8;
+  --tag-text:     #2959aa;
+  --shadow-sm:    0 1px 4px rgba(41,89,170,0.08);
+  --shadow-md:    0 4px 16px rgba(41,89,170,0.12);
+  --radius:       8px;
+  --radius-lg:    12px;
 }
 
 [data-theme="dark"] {
-  --color-bg: #0d1117;
-  --color-bg-secondary: #161b22;
-  --color-text: #e6edf3;
-  --color-text-muted: #8b949e;
-  --color-border: #30363d;
-  --color-link: #58a6ff;
-  --color-link-hover: #79c0ff;
-  --color-accent: #58a6ff;
-  --color-header-bg: #161b22;
-  --color-footer-bg: #161b22;
-  --color-code-bg: #1c2128;
-  --color-code-text: #adbac7;
-  --color-pre-bg: #1c2128;
-  --color-blockquote-border: #58a6ff;
-  --color-blockquote-bg: #1c2128;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --bg:           #1a1b2e;
+  --bg2:          #24283b;
+  --bg3:          #292e42;
+  --text:         #c0caf5;
+  --text-muted:   #565f89;
+  --border:       #292e42;
+  --link:         #7aa2f7;
+  --link-hover:   #bb9af7;
+  --accent:       #7aa2f7;
+  --accent2:      #bb9af7;
+  --header-bg:    #1f2335;
+  --footer-bg:    #1f2335;
+  --code-bg:      #1f2335;
+  --code-text:    #9ece6a;
+  --pre-bg:       #1f2335;
+  --pre-border:   #7aa2f7;
+  --quote-bg:     #1f2335;
+  --quote-border: #bb9af7;
+  --tag-bg:       #292e42;
+  --tag-text:     #7aa2f7;
+  --shadow-sm:    0 1px 4px rgba(0,0,0,0.4);
+  --shadow-md:    0 4px 16px rgba(0,0,0,0.5);
 }
 
-/* ============================================================
-   Base & Typography
-   ============================================================ */
+/* ── Base ───────────────────────────────────────────────────── */
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  line-height: 1.75;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.78;
+  transition: background-color 0.3s ease, color 0.3s ease;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ============================================================
-   Dark Mode — Force overrides on Minima's hard-coded styles
-   ============================================================ */
+/* ── Dark mode: force override Minima hard-coded colours ─────── */
 
 [data-theme="dark"] body {
-  background-color: #0d1117 !important;
-  color: #e6edf3 !important;
+  background-color: #1a1b2e !important;
+  color: #c0caf5 !important;
 }
 
 [data-theme="dark"] .page-content,
 [data-theme="dark"] .wrapper {
-  background-color: #0d1117;
+  background-color: #1a1b2e;
 }
 
 [data-theme="dark"] p,
 [data-theme="dark"] li,
 [data-theme="dark"] span,
+[data-theme="dark"] td,
 [data-theme="dark"] .post-content {
-  color: #e6edf3;
+  color: #c0caf5;
 }
 
 [data-theme="dark"] h1,
@@ -84,215 +95,215 @@ body {
 [data-theme="dark"] h4,
 [data-theme="dark"] h5,
 [data-theme="dark"] h6 {
-  color: #e6edf3 !important;
+  color: #c0caf5 !important;
 }
 
-[data-theme="dark"] a {
-  color: #58a6ff !important;
-}
+[data-theme="dark"] a        { color: #7aa2f7 !important; }
+[data-theme="dark"] a:visited { color: #bb9af7 !important; }
+[data-theme="dark"] a:hover   { color: #bb9af7 !important; }
 
-[data-theme="dark"] a:visited {
-  color: #79c0ff !important;
-}
-
-[data-theme="dark"] a:hover {
-  color: #79c0ff !important;
-}
+/* ── Links ──────────────────────────────────────────────────── */
 
 a {
-  color: var(--color-link);
+  color: var(--link);
   text-decoration: none;
   transition: color 0.15s ease;
 }
+a:hover { color: var(--link-hover); }
 
-a:hover {
-  color: var(--color-link-hover);
-  text-decoration: underline;
-}
+/* ── Headings ───────────────────────────────────────────────── */
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  letter-spacing: -0.3px;
-  color: var(--color-text);
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: var(--text);
   line-height: 1.3;
 }
 
 hr {
   border: none;
-  border-top: 1px solid var(--color-border);
-  margin: 2rem 0;
+  border-top: 1px solid var(--border);
+  margin: 2.5rem 0;
 }
 
-/* ============================================================
-   Site Header
-   ============================================================ */
+/* ── Header ─────────────────────────────────────────────────── */
 
 .site-header {
-  background-color: var(--color-header-bg) !important;
-  border-bottom: 1px solid var(--color-border) !important;
+  background-color: var(--header-bg) !important;
+  border-bottom: 1px solid var(--border) !important;
+  /* Tokyo Night signature: coloured top stripe */
+  border-top: 3px solid transparent !important;
+  background-image: linear-gradient(var(--header-bg), var(--header-bg)),
+                    linear-gradient(90deg, #7aa2f7, #bb9af7, #7dcfff) !important;
+  background-origin: border-box !important;
+  background-clip: padding-box, border-box !important;
   box-shadow: var(--shadow-sm);
-  transition: background-color 0.25s ease, border-color 0.25s ease;
+  transition: background-color 0.3s ease;
 }
 
 .site-title {
-  font-family: 'Inter', sans-serif !important;
-  font-weight: 700 !important;
+  font-weight: 800 !important;
   letter-spacing: -0.5px;
-  color: var(--color-text) !important;
-  transition: color 0.15s ease;
-}
-
-.site-title:visited {
-  color: var(--color-text) !important;
+  background: linear-gradient(90deg, #7aa2f7, #bb9af7);
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
 }
 
 .site-title:hover {
   text-decoration: none !important;
-  color: var(--color-accent) !important;
+  opacity: 0.8;
 }
 
 .site-nav .page-link {
-  color: var(--color-text) !important;
+  color: var(--text) !important;
   font-weight: 500;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   transition: color 0.15s ease;
 }
 
 .site-nav .page-link:hover {
-  color: var(--color-accent) !important;
+  color: var(--accent) !important;
   text-decoration: none;
 }
 
-/* ============================================================
-   Site Footer
-   ============================================================ */
+/* Dark mode header override */
+[data-theme="dark"] .site-header {
+  background-color: #1f2335 !important;
+  background-image: linear-gradient(#1f2335, #1f2335),
+                    linear-gradient(90deg, #7aa2f7, #bb9af7, #7dcfff) !important;
+  border-bottom-color: #292e42 !important;
+}
+
+[data-theme="dark"] .site-nav .page-link { color: #c0caf5 !important; }
+[data-theme="dark"] .site-nav .page-link:hover { color: #7aa2f7 !important; }
+
+/* ── Footer ─────────────────────────────────────────────────── */
 
 .site-footer {
-  background-color: var(--color-footer-bg) !important;
-  border-top: 1px solid var(--color-border) !important;
-  color: var(--color-text-muted) !important;
-  transition: background-color 0.25s ease, border-color 0.25s ease;
+  background-color: var(--footer-bg) !important;
+  border-top: 1px solid var(--border) !important;
+  color: var(--text-muted) !important;
+  transition: background-color 0.3s ease;
 }
 
-.site-footer a {
-  color: var(--color-text-muted) !important;
-}
+.site-footer a        { color: var(--text-muted) !important; }
+.site-footer a:hover  { color: var(--accent) !important; }
 
-.site-footer a:hover {
-  color: var(--color-accent) !important;
-}
+[data-theme="dark"] .site-footer { background-color: #1f2335 !important; border-top-color: #292e42 !important; }
 
-/* ============================================================
-   Post Layout
-   ============================================================ */
+/* ── Post header / meta ─────────────────────────────────────── */
 
 .post-title {
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: -0.5px;
-  color: var(--color-text);
 }
 
 .post-meta {
-  color: var(--color-text-muted) !important;
-  font-size: 0.875rem;
+  color: var(--text-muted) !important;
+  font-size: 0.85rem;
   font-weight: 500;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
-.post-content p {
-  color: var(--color-text);
-}
-
-.post-content a {
-  color: var(--color-link);
-}
-
-.post-content a:hover {
-  color: var(--color-link-hover);
-}
-
-/* ============================================================
-   Reading Time Badge
-   ============================================================ */
+/* ── Reading time badge ──────────────────────────────────────── */
 
 .reading-time {
   display: inline-flex;
   align-items: center;
-  background-color: var(--color-bg-secondary);
-  color: var(--color-text-muted);
-  border: 1px solid var(--color-border);
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  border: 1px solid var(--border);
   border-radius: 20px;
-  font-size: 0.78rem;
-  font-weight: 500;
-  padding: 0.15em 0.7em;
-  margin-left: 0.4rem;
-  transition: all 0.25s ease;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15em 0.75em;
+  margin-left: 0.25rem;
+  letter-spacing: 0.01em;
+  transition: all 0.3s ease;
 }
 
-/* ============================================================
-   Code Blocks
-   ============================================================ */
+/* ── Code ───────────────────────────────────────────────────── */
 
 code {
-  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
-  font-size: 0.875em;
-  background-color: var(--color-code-bg) !important;
-  color: var(--color-code-text) !important;
-  border-radius: 4px;
-  padding: 0.15em 0.4em;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.855em;
+  background-color: var(--code-bg) !important;
+  color: var(--code-text) !important;
+  border-radius: 5px;
+  padding: 0.15em 0.45em;
+  transition: background-color 0.3s ease;
 }
 
 pre {
-  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
-  background-color: var(--color-pre-bg) !important;
-  border: 1px solid var(--color-border) !important;
-  border-left: 3px solid var(--color-accent) !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  background-color: var(--pre-bg) !important;
+  border: 1px solid var(--border) !important;
+  border-left: 4px solid var(--pre-border) !important;
   border-radius: var(--radius) !important;
   padding: 1.25rem 1.5rem !important;
   overflow-x: auto;
   font-size: 0.875rem;
   line-height: 1.65;
-  transition: background-color 0.25s ease, border-color 0.25s ease;
   box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
 }
 
 pre code {
   background: none !important;
   padding: 0 !important;
-  border-radius: 0;
-  font-size: inherit;
   color: inherit !important;
+  font-size: inherit;
 }
 
-/* ============================================================
-   Blockquotes
-   ============================================================ */
+/* Dark mode code colours (Tokyo Night) */
+[data-theme="dark"] code { color: #9ece6a !important; }
+[data-theme="dark"] pre  { color: #c0caf5; }
+[data-theme="dark"] pre code { color: #c0caf5 !important; }
+
+[data-theme="dark"] .highlight { background: #1f2335 !important; }
+[data-theme="dark"] .highlight .c,
+[data-theme="dark"] .highlight .c1,
+[data-theme="dark"] .highlight .cm  { color: #565f89; }
+[data-theme="dark"] .highlight .k,
+[data-theme="dark"] .highlight .kd,
+[data-theme="dark"] .highlight .kn  { color: #bb9af7; }
+[data-theme="dark"] .highlight .s,
+[data-theme="dark"] .highlight .s1,
+[data-theme="dark"] .highlight .s2  { color: #9ece6a; }
+[data-theme="dark"] .highlight .nf  { color: #7aa2f7; }
+[data-theme="dark"] .highlight .n   { color: #c0caf5; }
+[data-theme="dark"] .highlight .mi,
+[data-theme="dark"] .highlight .mf  { color: #ff9e64; }
+[data-theme="dark"] .highlight .nc  { color: #7dcfff; }
+
+/* ── Blockquotes ────────────────────────────────────────────── */
 
 blockquote {
-  border-left: 4px solid var(--color-blockquote-border) !important;
-  background-color: var(--color-blockquote-bg) !important;
-  margin: 1.5rem 0;
+  border-left: 4px solid var(--quote-border) !important;
+  background-color: var(--quote-bg) !important;
+  margin: 1.75rem 0;
   padding: 1rem 1.5rem !important;
   border-radius: 0 var(--radius) var(--radius) 0;
-  color: var(--color-text-muted) !important;
+  color: var(--text-muted) !important;
   font-style: italic;
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
 }
 
-blockquote p {
-  margin: 0;
-  color: var(--color-text-muted) !important;
-}
+blockquote p { margin: 0; color: var(--text-muted) !important; }
 
-/* ============================================================
-   Tables
-   ============================================================ */
+[data-theme="dark"] blockquote {
+  background-color: #1f2335 !important;
+  border-left-color: #bb9af7 !important;
+  color: #565f89 !important;
+}
+[data-theme="dark"] blockquote p { color: #8b95c9 !important; }
+
+/* ── Tables ─────────────────────────────────────────────────── */
 
 table {
   border-collapse: collapse;
@@ -302,140 +313,105 @@ table {
 }
 
 th {
-  background-color: var(--color-bg-secondary);
-  color: var(--color-text);
+  background-color: var(--bg2);
+  color: var(--text);
   font-weight: 600;
   padding: 0.75rem 1rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border);
   text-align: left;
-  transition: background-color 0.25s ease;
 }
 
 td {
   padding: 0.65rem 1rem;
-  border: 1px solid var(--color-border);
-  color: var(--color-text);
-  background-color: var(--color-bg);
-  transition: background-color 0.25s ease;
+  border: 1px solid var(--border);
+  color: var(--text);
+  background-color: var(--bg);
 }
 
-tr:nth-child(even) td {
-  background-color: var(--color-bg-secondary);
-}
+tr:nth-child(even) td { background-color: var(--bg2); }
 
-/* ============================================================
-   Post Preview Cards
-   ============================================================ */
+[data-theme="dark"] th { background-color: #24283b !important; color: #c0caf5 !important; border-color: #292e42 !important; }
+[data-theme="dark"] td { background-color: #1a1b2e !important; color: #c0caf5 !important; border-color: #292e42 !important; }
+[data-theme="dark"] tr:nth-child(even) td { background-color: #1f2335 !important; }
+
+/* ── Post preview cards ─────────────────────────────────────── */
 
 .post-preview {
   padding: 1.75rem 0;
-  border-bottom: 1px solid var(--color-border);
-  transition: border-color 0.25s ease;
+  border-bottom: 1px solid var(--border);
+  transition: border-color 0.3s ease;
 }
 
-.post-preview:last-child {
-  border-bottom: none;
-}
+.post-preview:last-child { border-bottom: none; }
 
 .post-preview h2 {
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 1.2rem;
-  margin-bottom: 0.4rem;
+  font-weight: 700;
+  font-size: 1.15rem;
   letter-spacing: -0.3px;
+  margin-bottom: 0.35rem;
 }
 
 .post-preview h2 a {
-  color: var(--color-text) !important;
+  color: var(--text) !important;
   text-decoration: none;
   transition: color 0.15s ease;
 }
 
-.post-preview h2 a:hover {
-  color: var(--color-accent) !important;
-  text-decoration: none;
-}
+.post-preview h2 a:hover { color: var(--accent) !important; }
 
-.post-preview .post-meta {
-  font-size: 0.825rem;
-  color: var(--color-text-muted) !important;
-}
+.post-preview .post-meta { font-size: 0.82rem; color: var(--text-muted) !important; }
 
-/* ============================================================
-   Images
-   ============================================================ */
+/* ── Images ─────────────────────────────────────────────────── */
 
 .post-content img {
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
   max-width: 100%;
-  border: 1px solid var(--color-border);
-  margin: 1rem 0;
+  border: 1px solid var(--border);
+  margin: 1.25rem 0;
   display: block;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* ============================================================
-   Dark Mode Toggle Button (in nav header)
-   ============================================================ */
+/* ── Dark mode toggle button (nav) ──────────────────────────── */
 
 .theme-toggle-btn {
-  background: none;
-  border: 1px solid var(--color-border);
+  background: var(--bg2);
+  border: 1px solid var(--border);
   border-radius: 6px;
-  color: var(--color-text);
+  color: var(--text);
   cursor: pointer;
   font-size: 1rem;
-  padding: 0.2rem 0.55rem;
+  padding: 0.2rem 0.6rem;
   margin-left: 0.75rem;
   line-height: 1.4;
   vertical-align: middle;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .theme-toggle-btn:hover {
-  background-color: var(--color-bg-secondary);
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  background: var(--bg3);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
-/* ============================================================
-   Dark Mode: Syntax Highlighting Adjustments
-   ============================================================ */
-
-[data-theme="dark"] .highlight {
-  background-color: var(--color-pre-bg) !important;
+[data-theme="dark"] .theme-toggle-btn {
+  background: #24283b;
+  border-color: #292e42;
+  color: #c0caf5;
 }
 
-[data-theme="dark"] .highlight .c,
-[data-theme="dark"] .highlight .c1,
-[data-theme="dark"] .highlight .cm { color: #8b949e; }
-
-[data-theme="dark"] .highlight .k,
-[data-theme="dark"] .highlight .kd,
-[data-theme="dark"] .highlight .kn { color: #ff7b72; }
-
-[data-theme="dark"] .highlight .s,
-[data-theme="dark"] .highlight .s1,
-[data-theme="dark"] .highlight .s2 { color: #a5d6ff; }
-
-[data-theme="dark"] .highlight .n  { color: #e6edf3; }
-[data-theme="dark"] .highlight .nf { color: #d2a8ff; }
-
-[data-theme="dark"] .highlight .mi,
-[data-theme="dark"] .highlight .mf { color: #79c0ff; }
-
-/* ============================================================
-   Page Content Transition
-   ============================================================ */
-
-.page-content {
-  transition: background-color 0.25s ease;
+[data-theme="dark"] .theme-toggle-btn:hover {
+  background: #292e42;
+  border-color: #7aa2f7;
+  color: #7aa2f7;
 }
 
-/* ============================================================
-   Mobile Responsive
-   ============================================================ */
+/* ── Page content transition ────────────────────────────────── */
+
+.page-content { transition: background-color 0.3s ease; }
+
+/* ── Mobile ─────────────────────────────────────────────────── */
 
 @media (max-width: 600px) {
   .post-meta {
@@ -443,8 +419,5 @@ tr:nth-child(even) td {
     align-items: flex-start;
     gap: 0.25rem;
   }
-
-  .reading-time {
-    margin-left: 0;
-  }
+  .reading-time { margin-left: 0; }
 }
