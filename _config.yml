@@ -50,3 +50,5 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
+  - SEO-GUIDE.html
+  - SETUP-COMMENTS.html
