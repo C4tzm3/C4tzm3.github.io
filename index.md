@@ -9,7 +9,6 @@ title: Home
     <h1 class="matrix-title">Welcome to My Tech Blog</h1>
     <p class="matrix-sub">Latest posts about CTF challenges, security notes, technical projects, and more.</p>
   </div>
-  <div class="matrix-hint">// hover or click to interact</div>
 </div>
 
 <script>
@@ -98,15 +97,6 @@ title: Home
   background: var(--bg2);
 }
 #matrix-canvas { display: block; width: 100%; }
-.matrix-hint {
-  position: absolute;
-  bottom: 8px; right: 12px;
-  font-size: 0.68rem;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--text-muted);
-  opacity: 0.6;
-  pointer-events: none;
-}
 .matrix-hero {
   position: absolute;
   top: 50%;
