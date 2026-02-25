@@ -1,30 +1,173 @@
 <header class="site-header" role="banner">
-  <div class="wrapper" style="display:flex; align-items:center; justify-content:space-between;">
-    {%- assign default_paths = site.pages | map: "path" -%}
-    {%- assign page_paths = site.header_pages | default: default_paths -%}
+  <div class="wrapper hdr-wrap">
     <a class="site-title" rel="author" href="{{ "/" | relative_url }}">C4tzm3</a>
 
-    <div style="display:flex; align-items:center; gap:0.5rem;">
-      {%- if page_paths -%}
-        {%- for path in page_paths -%}
-          {%- assign my_page = site.pages | where: "path", path | first -%}
-          {%- if my_page.title -%}
-          <a class="page-link" href="{{ my_page.url | relative_url }}">{{ my_page.title | escape }}</a>
-          {%- endif -%}
-        {%- endfor -%}
-      {%- endif -%}
+    <div class="hdr-right">
+      <a class="page-link about-link" href="/about/">About</a>
 
-      <button
-        class="theme-toggle-btn"
-        id="theme-toggle"
-        aria-label="Toggle dark mode"
+      <button class="burger-btn" id="burger-btn" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <nav class="burger-nav" id="burger-nav" aria-hidden="true">
+      <a class="burger-link" href="/ctf/">CTF Writeups</a>
+      <a class="burger-link" href="/notes/">Notes</a>
+      <a class="burger-link" href="/projects/">Projects</a>
+      <a class="burger-link" href="/others/">Others</a>
+      <div class="burger-divider"></div>
+      <button class="burger-theme-btn" id="theme-toggle"
         onclick="(function(b){
           var h=document.documentElement;
           var n=h.getAttribute('data-theme')==='dark'?'light':'dark';
           h.setAttribute('data-theme',n);
           localStorage.setItem('theme',n);
-          b.textContent=n==='dark'?'\u2600':'\u263E';
-        })(this)">&#9790;</button>
-    </div>
+          b.querySelector('.t-icon').textContent=n==='dark'?'\u2600':'\u263E';
+        })(this)">
+        <span class="t-icon">&#9790;</span> Theme
+      </button>
+    </nav>
   </div>
 </header>
+
+<style>
+/* ── Header layout ─────────────────────── */
+.hdr-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+.hdr-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.about-link {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text) !important;
+  transition: color 0.15s ease;
+}
+.about-link:hover { color: var(--accent) !important; text-decoration: none; }
+
+/* ── Burger button ─────────────────────── */
+.burger-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 8px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.burger-btn span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: background 0.2s ease;
+}
+.burger-btn:hover { border-color: var(--accent); background: var(--bg2); }
+.burger-btn:hover span { background: var(--accent); }
+.burger-btn.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.burger-btn.active span:nth-child(2) { opacity: 0; }
+.burger-btn.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── Dropdown nav ──────────────────────── */
+.burger-nav {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--header-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem;
+  min-width: 190px;
+  box-shadow: var(--shadow-md);
+  z-index: 999;
+  flex-direction: column;
+}
+.burger-nav.open { display: flex; }
+
+.burger-link {
+  display: block;
+  padding: 0.55rem 0.85rem;
+  border-radius: 6px;
+  color: var(--text) !important;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.15s ease, color 0.15s ease;
+  text-decoration: none !important;
+}
+.burger-link:hover { background: var(--bg2); color: var(--accent) !important; }
+
+.burger-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0.4rem 0.5rem;
+}
+
+.burger-theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.55rem 0.85rem;
+  border-radius: 6px;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left;
+}
+.burger-theme-btn:hover { background: var(--bg2); color: var(--accent); }
+
+/* Dark mode overrides */
+[data-theme="dark"] .burger-btn span { background: #c0caf5; }
+[data-theme="dark"] .burger-nav { background: #1f2335; border-color: #292e42; }
+[data-theme="dark"] .burger-link { color: #c0caf5 !important; }
+[data-theme="dark"] .burger-link:hover { background: #292e42; color: #7aa2f7 !important; }
+[data-theme="dark"] .burger-theme-btn { color: #c0caf5; }
+[data-theme="dark"] .burger-theme-btn:hover { background: #292e42; color: #7aa2f7; }
+[data-theme="dark"] .about-link { color: #c0caf5 !important; }
+[data-theme="dark"] .about-link:hover { color: #7aa2f7 !important; }
+</style>
+
+<script>
+  (function() {
+    var btn  = document.getElementById('burger-btn');
+    var nav  = document.getElementById('burger-nav');
+    var icon = document.querySelector('#theme-toggle .t-icon');
+
+    // Sync theme icon
+    if (icon) icon.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\u2600' : '\u263E';
+
+    // Toggle menu
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var open = nav.classList.toggle('open');
+      btn.classList.toggle('active', open);
+      btn.setAttribute('aria-expanded', open);
+      nav.setAttribute('aria-hidden', !open);
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!nav.contains(e.target) && e.target !== btn) {
+        nav.classList.remove('open');
+        btn.classList.remove('active');
+        btn.setAttribute('aria-expanded', false);
+        nav.setAttribute('aria-hidden', true);
+      }
+    });
+  })();
+</script>
