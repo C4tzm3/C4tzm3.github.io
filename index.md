@@ -3,12 +3,12 @@ layout: home
 title: Home
 ---
 
-# Welcome to My Tech Blog
-
-Latest posts about CTF challenges, security notes, technical projects, and more.
-
 <div class="matrix-wrap">
   <canvas id="matrix-canvas"></canvas>
+  <div class="matrix-hero">
+    <h1 class="matrix-title">Welcome to My Tech Blog</h1>
+    <p class="matrix-sub">Latest posts about CTF challenges, security notes, technical projects, and more.</p>
+  </div>
   <div class="matrix-hint">// hover or click to interact</div>
 </div>
 
@@ -107,6 +107,43 @@ Latest posts about CTF challenges, security notes, technical projects, and more.
   opacity: 0.6;
   pointer-events: none;
 }
+.matrix-hero {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+  z-index: 2;
+  background: rgba(26, 27, 46, 0.55);
+  padding: 1.1rem 2.2rem;
+  border-radius: 10px;
+  backdrop-filter: blur(3px);
+  border: 1px solid rgba(122, 162, 247, 0.25);
+  width: max-content;
+  max-width: 88%;
+}
+[data-theme="light"] .matrix-hero {
+  background: rgba(240, 240, 248, 0.65);
+  border-color: rgba(41, 89, 170, 0.2);
+}
+.matrix-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #c0caf5;
+  margin: 0 0 0.35rem;
+  letter-spacing: 0.01em;
+  border: none;
+  padding: 0;
+}
+[data-theme="light"] .matrix-title { color: #1e3a6e; }
+.matrix-sub {
+  font-size: 0.85rem;
+  color: #a9b1d6;
+  margin: 0;
+  line-height: 1.5;
+}
+[data-theme="light"] .matrix-sub { color: #4a5568; }
 </style>
 
 ## 💬 Have a Question or Topic Request?

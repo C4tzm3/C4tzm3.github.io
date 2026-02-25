@@ -8,25 +8,25 @@
       <button class="burger-btn" id="burger-btn" aria-label="Open menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
-    </div>
 
-    <nav class="burger-nav" id="burger-nav" aria-hidden="true">
-      <a class="burger-link" href="/ctf/">CTF Writeups</a>
-      <a class="burger-link" href="/notes/">Notes</a>
-      <a class="burger-link" href="/projects/">Projects</a>
-      <a class="burger-link" href="/others/">Others</a>
-      <div class="burger-divider"></div>
-      <button class="burger-theme-btn" id="theme-toggle"
-        onclick="(function(b){
-          var h=document.documentElement;
-          var n=h.getAttribute('data-theme')==='dark'?'light':'dark';
-          h.setAttribute('data-theme',n);
-          localStorage.setItem('theme',n);
-          b.querySelector('.t-icon').textContent=n==='dark'?'\u2600':'\u263E';
-        })(this)">
-        <span class="t-icon">&#9790;</span> Theme
-      </button>
-    </nav>
+      <nav class="burger-nav" id="burger-nav" aria-hidden="true">
+        <a class="burger-link" href="/ctf/">CTF Writeups</a>
+        <a class="burger-link" href="/notes/">Notes</a>
+        <a class="burger-link" href="/projects/">Projects</a>
+        <a class="burger-link" href="/others/">Others</a>
+        <div class="burger-divider"></div>
+        <button class="burger-theme-btn" id="theme-toggle"
+          onclick="(function(b){
+            var h=document.documentElement;
+            var n=h.getAttribute('data-theme')==='dark'?'light':'dark';
+            h.setAttribute('data-theme',n);
+            localStorage.setItem('theme',n);
+            b.querySelector('.t-icon').textContent=n==='dark'?'\u2600':'\u263E';
+          })(this)">
+          <span class="t-icon">&#9790;</span> Theme
+        </button>
+      </nav>
+    </div>
   </div>
 </header>
 
@@ -36,12 +36,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: relative;
 }
 .hdr-right {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  position: relative;
 }
 .about-link {
   font-weight: 500;
