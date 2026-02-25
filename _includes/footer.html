@@ -1,0 +1,45 @@
+<footer class="site-footer">
+  <div class="wrapper">
+    <div class="footer-inner">
+      <span class="footer-left">
+        <a href="{{ "/" | relative_url }}" style="font-weight:700;">C4tzm3</a>
+        &nbsp;·&nbsp; CTF Writeups, Security Notes &amp; Technical Documentation
+      </span>
+      <span class="footer-right">
+        © {{ 'now' | date: "%Y" }} C4tzm3 &nbsp;·&nbsp; Built with
+        <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a>
+        &amp;
+        <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<style>
+.site-footer {
+  border-top: 1px solid var(--border) !important;
+  background-color: var(--footer-bg) !important;
+  padding: 1.25rem 0;
+  font-size: 0.82rem;
+  transition: background-color 0.3s ease;
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  color: var(--text-muted);
+}
+.footer-inner a {
+  color: var(--text-muted) !important;
+  transition: color 0.15s ease;
+}
+.footer-inner a:hover { color: var(--accent) !important; text-decoration: none; }
+[data-theme="dark"] .footer-inner { color: #565f89; }
+[data-theme="dark"] .footer-inner a { color: #565f89 !important; }
+[data-theme="dark"] .footer-inner a:hover { color: #7aa2f7 !important; }
+@media (max-width: 600px) {
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+}
+</style>
