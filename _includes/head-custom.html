@@ -6,8 +6,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-<!-- Custom styles -->
-<link rel="stylesheet" href="{{ '/assets/css/custom.css' | relative_url }}">
+<!-- Custom stylesheet -->
+<link rel="stylesheet" href="/assets/css/custom.css">
 
 <!-- Apply saved theme immediately to prevent flash -->
 <script>
@@ -17,12 +17,66 @@
   })();
 </script>
 
-<!-- Sync toggle button icon after page loads -->
+<!-- Sync toggle icon on load -->
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var btn = document.getElementById('theme-toggle');
-    if (btn) {
-      btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\u2600' : '\u263E';
-    }
+    if (btn) btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\u2600' : '\u263E';
   });
 </script>
+
+<!-- TOKYO NIGHT — inline critical styles (guaranteed to load) -->
+<style>
+/* ── Variables: Light ──────────────────────────────── */
+:root {
+  --bg:#ffffff; --bg2:#f0f0f8; --bg3:#e8e8f0;
+  --text:#343b58; --text-muted:#8c8fa1; --border:#d8d9e0;
+  --link:#2959aa; --link-hover:#7c3aed; --accent:#2959aa;
+  --header-bg:#ffffff; --footer-bg:#f5f5fb;
+  --code-bg:#f0f0f8; --code-text:#343b58; --pre-bg:#f0f0f8;
+  --pre-border:#2959aa; --quote-bg:#ececf8; --quote-border:#7c3aed;
+  --tag-bg:#e4e6f8; --tag-text:#2959aa;
+  --shadow-sm:0 1px 4px rgba(41,89,170,.08);
+  --shadow-md:0 4px 16px rgba(41,89,170,.12);
+  --radius:8px;
+}
+
+/* ── Variables: Dark (Tokyo Night) ────────────────── */
+[data-theme="dark"] {
+  --bg:#1a1b2e; --bg2:#24283b; --bg3:#292e42;
+  --text:#c0caf5; --text-muted:#565f89; --border:#292e42;
+  --link:#7aa2f7; --link-hover:#bb9af7; --accent:#7aa2f7;
+  --header-bg:#1f2335; --footer-bg:#1f2335;
+  --code-bg:#1f2335; --code-text:#9ece6a; --pre-bg:#1f2335;
+  --pre-border:#7aa2f7; --quote-bg:#1f2335; --quote-border:#bb9af7;
+  --tag-bg:#292e42; --tag-text:#7aa2f7;
+  --shadow-sm:0 1px 4px rgba(0,0,0,.4);
+  --shadow-md:0 4px 16px rgba(0,0,0,.5);
+}
+
+/* ── Force dark on Minima's hard-coded colours ─────── */
+[data-theme="dark"] body            { background-color:#1a1b2e !important; color:#c0caf5 !important; }
+[data-theme="dark"] .page-content,
+[data-theme="dark"] .wrapper        { background-color:#1a1b2e !important; }
+[data-theme="dark"] .site-header    { background-color:#1f2335 !important; border-bottom-color:#292e42 !important; }
+[data-theme="dark"] .site-footer    { background-color:#1f2335 !important; border-top-color:#292e42 !important; color:#565f89 !important; }
+[data-theme="dark"] .site-footer a  { color:#565f89 !important; }
+[data-theme="dark"] .site-title     { color:#c0caf5 !important; }
+[data-theme="dark"] .site-nav .page-link { color:#c0caf5 !important; }
+[data-theme="dark"] h1,[data-theme="dark"] h2,
+[data-theme="dark"] h3,[data-theme="dark"] h4,
+[data-theme="dark"] h5,[data-theme="dark"] h6 { color:#c0caf5 !important; }
+[data-theme="dark"] p,[data-theme="dark"] li,
+[data-theme="dark"] span,[data-theme="dark"] td { color:#c0caf5; }
+[data-theme="dark"] a               { color:#7aa2f7 !important; }
+[data-theme="dark"] a:visited       { color:#bb9af7 !important; }
+[data-theme="dark"] a:hover         { color:#bb9af7 !important; }
+[data-theme="dark"] pre             { background-color:#1f2335 !important; border-left-color:#7aa2f7 !important; border-color:#292e42 !important; color:#c0caf5 !important; }
+[data-theme="dark"] code            { background-color:#1f2335 !important; color:#9ece6a !important; }
+[data-theme="dark"] pre code        { background:none !important; color:#c0caf5 !important; }
+[data-theme="dark"] blockquote      { background-color:#1f2335 !important; border-left-color:#bb9af7 !important; color:#8b95c9 !important; }
+[data-theme="dark"] blockquote p    { color:#8b95c9 !important; }
+[data-theme="dark"] table th        { background-color:#24283b !important; color:#c0caf5 !important; border-color:#292e42 !important; }
+[data-theme="dark"] table td        { background-color:#1a1b2e !important; color:#c0caf5 !important; border-color:#292e42 !important; }
+[data-theme="dark"] tr:nth-child(even) td { background-color:#1f2335 !important; }
+</style>
