@@ -9,30 +9,20 @@
 <!-- Custom styles -->
 <link rel="stylesheet" href="{{ '/assets/css/custom.css' | relative_url }}">
 
-<!-- Dark mode: apply saved theme before paint to prevent flash -->
+<!-- Apply saved theme immediately to prevent flash -->
 <script>
   (function() {
-    var theme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', theme);
+    var t = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', t);
   })();
 </script>
 
-<!-- Dark mode toggle logic -->
+<!-- Sync toggle button icon after page loads -->
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var btn = document.getElementById('theme-toggle');
-    var icon = document.getElementById('theme-icon');
-    if (!btn || !icon) return;
-
-    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    icon.innerHTML = isDark ? '&#9728;' : '&#9790;';
-
-    btn.addEventListener('click', function() {
-      var current = document.documentElement.getAttribute('data-theme');
-      var next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-      icon.innerHTML = next === 'dark' ? '&#9728;' : '&#9790;';
-    });
+    if (btn) {
+      btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\u2600' : '\u263E';
+    }
   });
 </script>
