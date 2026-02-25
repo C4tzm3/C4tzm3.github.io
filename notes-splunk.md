@@ -8,8 +8,6 @@ permalink: /notes/splunk/
 
 Complete guides and notes for Splunk deployment, configuration, and management.
 
-## All Splunk Posts
-
 <ul class="post-list">
 {% for post in site.categories.splunk %}
   <li>
