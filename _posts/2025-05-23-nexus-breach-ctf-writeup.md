@@ -387,6 +387,113 @@ A methodical credential sweep across all file types — passwords, API keys, tok
 
 ## Q9 — Which other legit user has admin permissions on the Nexus instance (excluding `adm1n1str4t0r` and `admin`)? (e.g. `john_doe`)
 
+### Analysing security.xml
+
+The security.xml blob (the largest in the capture) decrypts to a full Nexus user database.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<security>
+  <version>2.0.5</version>
+  <users>
+    <user>
+      <id>deployment</id>
+      <firstName>Deployment</firstName>
+      <lastName>User</lastName>
+      <password>b2a0e378437817cebdf753d7dff3dd75483af9e0</password>
+      <status>active</status>
+      <email>deployment@corp.htb</email>
+    </user>
+    <user>
+      <id>anonymous</id>
+      <firstName>Nexus</firstName>
+      <lastName>Anonymous User</lastName>
+      <password>$shiro1$SHA-512$1024$zVANUnbAR2sp7I00pquLIQ==$5u2+o6DUtQ46YOOnk3PVCEobyqNaq2It6Rpf/jq0Se3EtObgr+mTUOOfEPBzyfSeLJgQCdkCbWnJvE1sNLbQ0A==</password>
+      <status>active</status>
+      <email>anonymous@corp.htb</email>
+    </user>
+    <user>
+      <id>john_smith</id>
+      <firstName>john</firstName>
+      <lastName>smith</lastName>
+      <password>$shiro1$SHA-512$1024$rWbh6j+8PZjTJwmq5L1RbA==$NoNDVWu1XN90QAnLGaOQ7nMVa0kOH28mnRb+U4cKwaJzox1isD+zSsKR5oSgEtqJzHpO/ZNDLEdOTnNCrdwsSw==</password>
+      <status>active</status>
+      <email>john_smith@corp.htb</email>
+    </user>
+    <user>
+      <id>brad_smith</id>
+      <firstName>Brad</firstName>
+      <lastName>Smith</lastName>
+      <password>$shiro1$SHA-512$1024$KxTwUY7hJfejxH4Lu9IyJQ==$gyBhme+Ymn1aL4AWu3bT4invCu5KoI3m3OMbYKErJ4jMvjTM9ELxxn0Zd5Y7rFLxE2HlcCVY6ahRqVkm9yfgXA==</password>
+      <status>active</status>
+      <email>brad_smith@corp.htb</email>
+    </user>
+    <user>
+      <id>admin</id>
+      <firstName>Administrator</firstName>
+      <lastName>User</lastName>
+      <password>$shiro1$SHA-512$1024$qYmC+VGcNXGxoLo3jHZpQg==$PFPFYc9hoYxLzV4EZFIELz7dGiTSLUYGCpzBatrh91sM/PIU01CPwWGDDA7OumGKfsgNXr7p25hALKIlyZqmzg==</password>
+      <status>active</status>
+      <email>administrator@corp.htb</email>
+    </user>
+    <user>
+      <id>adm1n1str4t0r</id>
+      <firstName>Persistent</firstName>
+      <lastName>Admin</lastName>
+      <password>$shiro1$SHA-512$1024$0l24cxJgYeT+cx22Vcl14A==$KLQ1VE9OcjxoGjzH+uUmYUAFMHmTd9eIdgZE5T5Ten4MnNVYA8rn8wZptdNDmT0BHcK18N2ERz8/3kpaL0r7Lg==</password>
+      <status>active</status>
+      <email>adm1n1str4t0r@phoenix.htb</email>
+    </user>
+  </users>
+  <userRoleMappings>
+    <userRoleMapping>
+      <userId>deployment</userId>
+      <source>default</source>
+      <roles>
+        <role>repository-any-full</role>
+        <role>nx-deployment</role>
+      </roles>
+    </userRoleMapping>
+    <userRoleMapping>
+      <userId>anonymous</userId>
+      <source>default</source>
+      <roles>
+        <role>repository-any-read</role>
+        <role>anonymous</role>
+      </roles>
+    </userRoleMapping>
+    <userRoleMapping>
+      <userId>john_smith</userId>
+      <source>default</source>
+      <roles>
+        <role>nx-admin</role>
+      </roles>
+    </userRoleMapping>
+    <userRoleMapping>
+      <userId>brad_smith</userId>
+      <source>default</source>
+      <roles>
+        <role>nx-developer</role>
+      </roles>
+    </userRoleMapping>
+    <userRoleMapping>
+      <userId>admin</userId>
+      <source>default</source>
+      <roles>
+        <role>nx-admin</role>
+      </roles>
+    </userRoleMapping>
+    <userRoleMapping>
+      <userId>adm1n1str4t0r</userId>
+      <source>default</source>
+      <roles>
+        <role>nx-admin</role>
+      </roles>
+    </userRoleMapping>
+  </userRoleMappings>
+</security>
+```
+
 The decrypted `security.xml` blob reveals the full Nexus user database:
 
 | User ID | Role | Admin? | Email Domain | Password Format |
