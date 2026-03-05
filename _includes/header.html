@@ -1,77 +1,304 @@
 <header class="site-header" role="banner">
-  <div class="wrapper site-nav-wrap">
+  <div class="wrapper hdr-wrap">
+
+    <!-- Logo -->
     <a class="site-title" rel="author" href="{{ "/" | relative_url }}">C4tzm3</a>
 
-    <nav class="site-nav-links">
-      <a class="page-link" href="/ctf/">CTF</a>
-      <a class="page-link" href="/notes/">Notes</a>
-      <a class="page-link" href="/projects/">Projects</a>
-      <a class="page-link" href="/others/">Others</a>
-      <a class="page-link" href="/about/">About</a>
-      <button class="theme-btn" id="theme-toggle"
-        onclick="(function(b){
-          var h=document.documentElement;
-          var n=h.getAttribute('data-theme')==='dark'?'light':'dark';
-          h.setAttribute('data-theme',n);
-          localStorage.setItem('theme',n);
-          b.querySelector('.t-icon').textContent=n==='dark'?'\u2600':'\u263E';
-        })(this)">
-        <span class="t-icon">&#9790;</span>
-      </button>
-    </nav>
+    <!-- Search -->
+    <div class="hdr-search" id="hdr-search">
+      <span class="search-icon">&#128269;</span>
+      <input class="search-input" id="search-input" type="text" placeholder="Search posts…" autocomplete="off" aria-label="Search posts">
+      <div class="search-results" id="search-results"></div>
+    </div>
+
+    <!-- Right actions -->
+    <div class="hdr-actions">
+
+      <!-- Burger: CTF Notes Projects Others -->
+      <div class="drop-wrap" id="nav-wrap">
+        <button class="icon-btn" id="nav-btn" aria-label="Navigation" aria-expanded="false">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+        <nav class="drop-menu" id="nav-menu" aria-hidden="true">
+          <a class="drop-link" href="/ctf/">CTF Writeups</a>
+          <a class="drop-link" href="/notes/">Notes</a>
+          <a class="drop-link" href="/projects/">Projects</a>
+          <a class="drop-link" href="/others/">Others</a>
+        </nav>
+      </div>
+
+      <!-- Profile: About + Theme -->
+      <div class="drop-wrap" id="profile-wrap">
+        <button class="icon-btn profile-btn" id="profile-btn" aria-label="Profile menu" aria-expanded="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </button>
+        <div class="drop-menu" id="profile-menu" aria-hidden="true">
+          <a class="drop-link" href="/about/">About</a>
+          <div class="drop-divider"></div>
+          <button class="drop-theme-btn" id="theme-toggle"
+            onclick="(function(b){
+              var h=document.documentElement;
+              var n=h.getAttribute('data-theme')==='dark'?'light':'dark';
+              h.setAttribute('data-theme',n);
+              localStorage.setItem('theme',n);
+              b.querySelector('.t-icon').textContent=n==='dark'?'\u2600':'\u263E';
+            })(this)">
+            <span class="t-icon">&#9790;</span> Theme
+          </button>
+        </div>
+      </div>
+
+    </div>
   </div>
 </header>
 
 <style>
-.site-nav-wrap {
+/* ── Header shell ──────────────────────── */
+.hdr-wrap {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 1rem;
 }
-.site-nav-links {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+
+/* ── Search ────────────────────────────── */
+.hdr-search {
+  flex: 1;
+  position: relative;
+  max-width: 380px;
 }
-.site-nav-links .page-link {
-  color: var(--text) !important;
-  font-size: 0.9rem;
-  font-weight: 500;
-  padding: 0.3rem 0.65rem;
-  border-radius: 6px;
-  transition: background 0.15s ease, color 0.15s ease;
-  text-decoration: none !important;
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.85rem;
+  pointer-events: none;
+  opacity: 0.5;
 }
-.site-nav-links .page-link:hover {
+.search-input {
+  width: 100%;
+  padding: 0.38rem 0.75rem 0.38rem 2rem;
+  border: 1px solid var(--border);
+  border-radius: 20px;
   background: var(--bg2);
-  color: var(--accent) !important;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
 }
-.theme-btn {
+.search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(122,162,247,0.15);
+}
+.search-results {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--header-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-md);
+  z-index: 999;
+  max-height: 340px;
+  overflow-y: auto;
+}
+.search-results.open { display: block; }
+.search-item {
+  display: block;
+  padding: 0.6rem 1rem;
+  text-decoration: none !important;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s ease;
+}
+.search-item:last-child { border-bottom: none; }
+.search-item:hover { background: var(--bg2); }
+.search-item-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text) !important;
+  display: block;
+}
+.search-item-date {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 2px;
+}
+.search-empty {
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ── Right actions ─────────────────────── */
+.hdr-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+}
+
+/* ── Drop wrapper ──────────────────────── */
+.drop-wrap { position: relative; }
+
+/* ── Icon buttons ──────────────────────── */
+.icon-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
   background: none;
   border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text);
-  font-size: 1rem;
-  padding: 0.25rem 0.55rem;
+  border-radius: 8px;
+  padding: 7px 9px;
   cursor: pointer;
-  margin-left: 0.25rem;
+  color: var(--text);
   transition: border-color 0.2s ease, background 0.2s ease;
-  line-height: 1.4;
 }
-.theme-btn:hover {
-  border-color: var(--accent);
-  background: var(--bg2);
-  color: var(--accent);
+.icon-btn:hover { border-color: var(--accent); background: var(--bg2); color: var(--accent); }
+.icon-btn .bar {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
 }
-[data-theme="dark"] .site-nav-links .page-link { color: #c0caf5 !important; }
-[data-theme="dark"] .site-nav-links .page-link:hover { background: #292e42; color: #7aa2f7 !important; }
-[data-theme="dark"] .theme-btn { color: #c0caf5; border-color: #292e42; }
-[data-theme="dark"] .theme-btn:hover { background: #292e42; color: #7aa2f7; }
+.profile-btn { padding: 6px 9px; }
+
+/* ── Dropdown menu ─────────────────────── */
+.drop-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--header-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.4rem;
+  min-width: 175px;
+  box-shadow: var(--shadow-md);
+  z-index: 999;
+  flex-direction: column;
+}
+.drop-menu.open { display: flex; }
+.drop-link {
+  display: block;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text) !important;
+  text-decoration: none !important;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.drop-link:hover { background: var(--bg2); color: var(--accent) !important; }
+.drop-divider { height: 1px; background: var(--border); margin: 0.35rem 0.5rem; }
+.drop-theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+.drop-theme-btn:hover { background: var(--bg2); color: var(--accent); }
+
+/* ── Dark mode overrides ───────────────── */
+[data-theme="dark"] .search-input { background: #24283b; color: #c0caf5; border-color: #292e42; }
+[data-theme="dark"] .search-results { background: #1f2335; border-color: #292e42; }
+[data-theme="dark"] .search-item:hover { background: #292e42; }
+[data-theme="dark"] .search-item-title { color: #c0caf5 !important; }
+[data-theme="dark"] .icon-btn { color: #c0caf5; border-color: #292e42; }
+[data-theme="dark"] .icon-btn:hover { background: #292e42; color: #7aa2f7; border-color: #7aa2f7; }
+[data-theme="dark"] .drop-menu { background: #1f2335; border-color: #292e42; }
+[data-theme="dark"] .drop-link { color: #c0caf5 !important; }
+[data-theme="dark"] .drop-link:hover { background: #292e42; color: #7aa2f7 !important; }
+[data-theme="dark"] .drop-theme-btn { color: #c0caf5; }
+[data-theme="dark"] .drop-theme-btn:hover { background: #292e42; color: #7aa2f7; }
 </style>
 
 <script>
 (function() {
-  var icon = document.querySelector('#theme-toggle .t-icon');
-  if (icon) icon.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\u2600' : '\u263E';
+  // ── Theme icon sync ──────────────────────
+  var tIcon = document.querySelector('#theme-toggle .t-icon');
+  if (tIcon) tIcon.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\u2600' : '\u263E';
+
+  // ── Generic dropdown toggle ──────────────
+  function initDrop(btnId, menuId) {
+    var btn = document.getElementById(btnId);
+    var menu = document.getElementById(menuId);
+    if (!btn || !menu) return;
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var open = menu.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open);
+      menu.setAttribute('aria-hidden', !open);
+    });
+    document.addEventListener('click', function(e) {
+      if (!menu.contains(e.target) && e.target !== btn) {
+        menu.classList.remove('open');
+        btn.setAttribute('aria-expanded', false);
+        menu.setAttribute('aria-hidden', true);
+      }
+    });
+  }
+  initDrop('nav-btn', 'nav-menu');
+  initDrop('profile-btn', 'profile-menu');
+
+  // ── Search ───────────────────────────────
+  var input   = document.getElementById('search-input');
+  var results = document.getElementById('search-results');
+  var posts   = null;
+
+  function fetchPosts(cb) {
+    if (posts) { cb(); return; }
+    fetch('/search.json')
+      .then(function(r) { return r.json(); })
+      .then(function(data) { posts = data; cb(); })
+      .catch(function() { posts = []; });
+  }
+
+  function renderResults(q) {
+    if (!q) { results.classList.remove('open'); return; }
+    var matches = posts.filter(function(p) {
+      var hay = (p.title + ' ' + p.content).toLowerCase();
+      return hay.indexOf(q.toLowerCase()) !== -1;
+    }).slice(0, 8);
+
+    if (matches.length === 0) {
+      results.innerHTML = '<p class="search-empty">No results for "' + q + '"</p>';
+    } else {
+      results.innerHTML = matches.map(function(p) {
+        return '<a class="search-item" href="' + p.url + '">'
+          + '<span class="search-item-title">' + p.title + '</span>'
+          + '<span class="search-item-date">' + p.date + '</span>'
+          + '</a>';
+      }).join('');
+    }
+    results.classList.add('open');
+  }
+
+  if (input) {
+    input.addEventListener('focus', function() { fetchPosts(function() {}); });
+    input.addEventListener('input', function() {
+      fetchPosts(function() { renderResults(input.value.trim()); });
+    });
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('#hdr-search')) results.classList.remove('open');
+    });
+  }
 })();
 </script>
