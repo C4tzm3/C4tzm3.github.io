@@ -128,6 +128,27 @@
   display: block;
   margin-top: 2px;
 }
+.search-item-snippet {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 3px;
+  line-height: 1.5;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.search-item-snippet mark {
+  background: rgba(122,162,247,0.25);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 2px;
+  font-weight: 600;
+}
+[data-theme="dark"] .search-item-snippet mark {
+  background: rgba(187,154,247,0.3);
+}
 .search-empty {
   padding: 0.75rem 1rem;
   font-size: 0.85rem;
@@ -271,20 +292,41 @@
       .catch(function() { posts = []; });
   }
 
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function highlight(text, q) {
+    var esc = q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    return text.replace(new RegExp('(' + esc + ')', 'gi'), '<mark>$1</mark>');
+  }
+
+  function getSnippet(content, q) {
+    var lower = content.toLowerCase();
+    var idx = lower.indexOf(q.toLowerCase());
+    var start = Math.max(0, idx - 80);
+    var end = Math.min(content.length, idx + q.length + 120);
+    var snippet = (start > 0 ? '…' : '') + content.slice(start, end) + (end < content.length ? '…' : '');
+    return highlight(escHtml(snippet), q);
+  }
+
   function renderResults(q) {
     if (!q) { results.classList.remove('open'); return; }
+    var ql = q.toLowerCase();
     var matches = posts.filter(function(p) {
-      var hay = (p.title + ' ' + p.content).toLowerCase();
-      return hay.indexOf(q.toLowerCase()) !== -1;
-    }).slice(0, 8);
+      return (p.title + ' ' + p.content).toLowerCase().indexOf(ql) !== -1;
+    }).slice(0, 7);
 
     if (matches.length === 0) {
-      results.innerHTML = '<p class="search-empty">No results for "' + q + '"</p>';
+      results.innerHTML = '<p class="search-empty">No results for "' + escHtml(q) + '"</p>';
     } else {
       results.innerHTML = matches.map(function(p) {
+        var titleHl = highlight(escHtml(p.title), q);
+        var snippet = getSnippet(p.content || '', q);
         return '<a class="search-item" href="' + p.url + '">'
-          + '<span class="search-item-title">' + p.title + '</span>'
+          + '<span class="search-item-title">' + titleHl + '</span>'
           + '<span class="search-item-date">' + p.date + '</span>'
+          + (snippet ? '<span class="search-item-snippet">' + snippet + '</span>' : '')
           + '</a>';
       }).join('');
     }

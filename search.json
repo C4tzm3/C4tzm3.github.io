@@ -7,7 +7,7 @@ layout: none
     "title": {{ post.title | jsonify }},
     "url": "{{ post.url | relative_url }}",
     "date": "{{ post.date | date: '%b %-d, %Y' }}",
-    "content": {{ post.content | strip_html | truncatewords: 80 | jsonify }}
+    "content": {{ post.content | strip_html | truncatewords: 200 | jsonify }}
   }{% unless forloop.last %},{% endunless %}
   {% endfor %}
 ]
