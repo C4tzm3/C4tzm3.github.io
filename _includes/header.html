@@ -1,3 +1,14 @@
+<!-- Ambient glow blobs -->
+<div class="amb amb-l"></div>
+<div class="amb amb-r"></div>
+
+<!-- Animated side borders -->
+<div class="side-border side-border-l"></div>
+<div class="side-border side-border-r"></div>
+
+<!-- Back to top -->
+<button id="back-to-top" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+
 <header class="site-header" role="banner">
   <div class="wrapper hdr-wrap">
 
@@ -343,4 +354,12 @@
     });
   }
 })();
+
+  // ── Back-to-top visibility ───────────────
+  var btt = document.getElementById('back-to-top');
+  if (btt) {
+    window.addEventListener('scroll', function() {
+      btt.classList.toggle('visible', window.scrollY > 300);
+    }, { passive: true });
+  }
 </script>
