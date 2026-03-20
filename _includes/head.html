@@ -166,5 +166,39 @@
     /* ── Dark mode toggle button ──────────────────────── */
     .theme-toggle-btn { background:var(--bg2); border:1px solid var(--border); border-radius:6px; color:var(--text); cursor:pointer; font-size:1rem; padding:0.2rem 0.6rem; margin-left:0.75rem; line-height:1.4; vertical-align:middle; transition:all 0.2s ease; }
     .theme-toggle-btn:hover { background:var(--bg3); border-color:var(--accent); color:var(--accent); }
+
+    /* ── Reading progress bar ─────────────────────────── */
+    #read-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, #7aa2f7, #bb9af7);
+      z-index: 9999;
+      transition: width 0.1s linear;
+    }
+
+    /* ── Back-to-top button ───────────────────────────── */
+    #back-to-top {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 900;
+    }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { background: var(--link-hover); }
   </style>
 </head>

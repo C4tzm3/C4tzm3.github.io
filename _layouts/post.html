@@ -33,3 +33,90 @@ layout: default
   <!-- Add Comments Section -->
   {%- include comments.html -%}
 </article>
+
+<!-- Floating Table of Contents -->
+<nav id="toc" aria-label="Table of contents"></nav>
+
+<style>
+#toc {
+  position: fixed;
+  top: 50%;
+  right: calc((100vw - 960px) / 2 - 200px);
+  transform: translateY(-50%);
+  width: 180px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 0.5rem;
+  font-size: 0.78rem;
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: none;
+}
+#toc.visible { opacity: 1; display: block; }
+#toc-title {
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  padding: 0 0.5rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.4rem;
+}
+.toc-link {
+  display: block;
+  padding: 0.3rem 0.5rem;
+  color: var(--text-muted) !important;
+  text-decoration: none !important;
+  border-radius: 5px;
+  line-height: 1.4;
+  transition: background 0.15s, color 0.15s;
+  border-left: 2px solid transparent;
+}
+.toc-link:hover { background: var(--bg3); color: var(--text) !important; }
+.toc-link.active {
+  color: var(--accent) !important;
+  border-left-color: var(--accent);
+  background: var(--bg3);
+}
+.toc-h3 { padding-left: 1.1rem; font-size: 0.74rem; }
+</style>
+
+<script>
+(function() {
+  var toc = document.getElementById('toc');
+  if (!toc) return;
+
+  var headings = document.querySelectorAll('.post-content h2, .post-content h3');
+  if (headings.length < 2) return;
+
+  // Only show ToC if screen is wide enough
+  if (window.innerWidth < 1300) return;
+
+  var html = '<div id="toc-title">On this page</div>';
+  headings.forEach(function(h, i) {
+    if (!h.id) h.id = 'toc-h-' + i;
+    var cls = h.tagName === 'H3' ? 'toc-link toc-h3' : 'toc-link';
+    html += '<a class="' + cls + '" href="#' + h.id + '">' + h.textContent + '</a>';
+  });
+  toc.innerHTML = html;
+  toc.classList.add('visible');
+
+  // Highlight active section on scroll
+  var links = toc.querySelectorAll('.toc-link');
+  window.addEventListener('scroll', function() {
+    var scrollY = window.scrollY + 100;
+    var active = null;
+    headings.forEach(function(h) {
+      if (h.offsetTop <= scrollY) active = h.id;
+    });
+    links.forEach(function(l) {
+      l.classList.toggle('active', l.getAttribute('href') === '#' + active);
+    });
+  }, { passive: true });
+})();
+</script>

@@ -1,3 +1,9 @@
+<!-- Reading progress bar -->
+<div id="read-progress"></div>
+
+<!-- Back to top -->
+<button id="back-to-top" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+
 <header class="site-header" role="banner">
   <div class="wrapper hdr-wrap">
 
@@ -342,5 +348,19 @@
       if (!e.target.closest('#hdr-search')) results.classList.remove('open');
     });
   }
+})();
+</script>
+
+<script>
+// ── Reading progress + back-to-top ──────────
+(function() {
+  var bar = document.getElementById('read-progress');
+  var btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', function() {
+    var scrolled = window.scrollY;
+    var total = document.documentElement.scrollHeight - window.innerHeight;
+    if (bar && total > 0) bar.style.width = (scrolled / total * 100) + '%';
+    if (btn) btn.classList.toggle('visible', scrolled > 300);
+  }, { passive: true });
 })();
 </script>
