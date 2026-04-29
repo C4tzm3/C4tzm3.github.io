@@ -24,7 +24,7 @@ After injection, the malware:
 
 ---
 
-## Threat Actor — APT37
+## APT37
 
 | Attribute | Detail |
 |---|---|
