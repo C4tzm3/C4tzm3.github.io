@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Behind THUMBSBD: Behavioral Analysis of an Advanced Backdoor Linked to APT37"
-date: 2026-04-29
+date: 2026-02-27
 categories: [others]
 tags: [apt37, malware-analysis, backdoor, north-korea, dfir, threat-intelligence, snakedropper, windows, shellcode]
 description: "A behavioral analysis of THUMBSBD, a Windows backdoor linked to North Korean threat group APT37. Covers delivery via SNAKEDROPPER, C2 communication, in-memory shellcode execution, USB exfiltration, and MITRE ATT&CK mapping."
