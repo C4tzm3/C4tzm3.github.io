@@ -7,7 +7,7 @@ tags: [apt37, malware-analysis, backdoor, north-korea, dfir, threat-intelligence
 description: "A behavioral analysis of THUMBSBD, a Windows backdoor linked to North Korean threat group APT37. Covers delivery via SNAKEDROPPER, C2 communication, in-memory shellcode execution, USB exfiltration, and MITRE ATT&CK mapping."
 ---
 
-A behavioral analysis of THUMBSBD, a Windows backdoor associated with the North Korean threat group APT37, delivered via a shellcode dropper known as SNAKEDROPPER. This report covers how the malware operates after injection — from initialization to exfiltration — and how it attempts to evade detection.
+A behavioral analysis of THUMBSBD, a Windows backdoor associated with the North Korean threat group APT37, delivered via a shellcode dropper known as SNAKEDROPPER. This report covers how the malware operates after injection, from initialization to exfiltration, and how it attempts to evade detection.
 
 ---
 
@@ -45,13 +45,13 @@ THUMBSBD does not exist as a standalone file on disk. It is embedded inside **SN
 - **Size**: 10 MB
 - Contains the full **Ruby 3.3.0 runtime** used for persistence
 - THUMBSBD payload is embedded at offset `0x964F20`, XOR-encoded with key `0x0A`
-- **No import table** — all Windows API calls are resolved at runtime by hash, making static analysis significantly harder
+- **No import table**: all Windows API calls are resolved at runtime by hash, making static analysis significantly harder
 
 **Injection flow:**
 1. SNAKEDROPPER selects a legitimate Windows system process as the injection target
 2. Decodes THUMBSBD in place using the XOR key
 3. Injects into the target process using `VirtualAllocEx`, `WriteProcessMemory`, and `CreateRemoteThread`
-4. THUMBSBD is now active inside a legitimate process — no file written to disk at any stage
+4. THUMBSBD is now active inside a legitimate process, with no file written to disk at any stage
 
 ---
 
@@ -81,7 +81,7 @@ The malware queries `Win32_ComputerSystemProduct` to retrieve the hardware UUID.
 
 ---
 
-### Encrypted Victim Profile — TN.dat
+### Encrypted Victim Profile: TN.dat
 
 All collected victim data is encrypted before being saved to `TN.dat`:
 - Encryption uses **XOR key `0x83`**, applied as a 32-bit dword (`0x83838383`), processing 32 bytes at a time
@@ -134,9 +134,9 @@ Every file sent by the C2 operator carries an **encrypted header**. THUMBSBD dec
 ![Figure 5 - Payload Header Validation (0x00404640)](/assets/images/others/thumbsbd-apt37/fig5-payload-validation.png)
 
 Valid files are routed based on a type code:
-- **Type 1** — runs a command
-- **Type 0** — stores a data file
-- **Type 2** — executes a program only if the victim's hardware ID matches (LUUID-targeted delivery)
+- **Type 1**: runs a command
+- **Type 0**: stores a data file
+- **Type 2**: executes a program only if the victim's hardware ID matches (LUUID-targeted delivery)
 
 ---
 
@@ -146,7 +146,7 @@ A separate function handles **seven distinct operator command types**:
 
 | Type | Capability | Detail |
 |---|---|---|
-| 1 | Drive Enumeration | Lists all connected drives — type, label, total and free space |
+| 1 | Drive Enumeration | Lists all connected drives (type, label, total and free space) |
 | 2 | File Exfiltration | Reads a filename from the payload and sends that specific file to C2 |
 | 3 | Shell Command | Reads a command string and executes it via `cmd.exe` |
 | 4 | Shellcode Delivery | Receives a shellcode blob and runs it entirely in memory |
@@ -156,7 +156,7 @@ A separate function handles **seven distinct operator command types**:
 
 ![Figure 6 - Full Command Dispatcher (0x004023e0)](/assets/images/others/thumbsbd-apt37/fig6-command-dispatcher.png)
 
-**Type 4** is the most significant — it allows delivery and execution of arbitrary malware in memory at any time. Types 5 and 7 give the operator file deletion and remote profile update capabilities.
+**Type 4** is the most significant. It allows delivery and execution of arbitrary malware in memory at any time. Types 5 and 7 give the operator file deletion and remote profile update capabilities.
 
 ---
 
@@ -169,15 +169,15 @@ When a Type 4 command arrives, THUMBSBD loads and runs the payload entirely in m
 - `VirtualAlloc` with `PAGE_EXECUTE_READWRITE (0x40)` creates a region that can both store and execute code
 - The shellcode is copied in before being executed via a **direct function pointer call**
 - **Two `Sleep()` calls** are inserted before copy and before execution to defeat time-limited sandboxes
-- Memory is freed with `VirtualFree` after execution — no file ever touches disk
+- Memory is freed with `VirtualFree` after execution, no file ever touches disk
 
 ---
 
-### Command Deduplication — del.dat
+### Command Deduplication: del.dat
 
 THUMBSBD keeps an encrypted log of every command already executed in `del.dat`. Before running any new command, it checks this log:
-- If the command is already present — it is **skipped**
-- If new — it is **appended in encrypted form** before execution proceeds
+- If the command is already present, it is **skipped**
+- If new, it is **appended in encrypted form** before execution proceeds
 
 This prevents the same command from running twice even if the C2 re-sends it.
 
@@ -185,13 +185,13 @@ This prevents the same command from running twice even if the C2 re-sends it.
 
 ---
 
-### USB Staging — Offline Exfiltration Channel
+### USB Staging: Offline Exfiltration Channel
 
-THUMBSBD copies collected data to USB drives using a folder named **`$RECYCLE .BIN`** — almost identical to the real Windows Recycle Bin folder but with a **space before BIN**. All staged files are marked **HIDDEN** so they do not appear in normal folder views.
+THUMBSBD copies collected data to USB drives using a folder named **`$RECYCLE .BIN`**, almost identical to the real Windows Recycle Bin folder but with a **space before BIN**. All staged files are marked **HIDDEN** so they do not appear in normal folder views.
 
 ![Figure 9 - USB Staging (0x00402f60)](/assets/images/others/thumbsbd-apt37/fig9-usb-staging.png)
 
-Combined with `ScanUSBDrive_StageFiles`, this creates a **complete bidirectional offline C2 channel** — the operator can reach victims without internet access, including in restricted or air-gapped environments.
+Combined with `ScanUSBDrive_StageFiles`, this creates a **complete bidirectional offline C2 channel**, allowing the operator to reach victims without internet access, including in restricted or air-gapped environments.
 
 ---
 
@@ -220,7 +220,7 @@ This technique can **bypass forensic tools** that rely on NTFS timestamps to rec
 | Defense Evasion | T1036 | Uses folder name similar to Windows Recycle Bin (`$RECYCLE .BIN`) to hide staged files |
 | Defense Evasion | T1497.003 | Uses execution delays to evade automated sandbox analysis |
 | Defense Evasion | T1070.006 | Restores original file timestamps to hide evidence of file modification |
-| Discovery | T1082 | Collects system information — OS version, host details |
+| Discovery | T1082 | Collects system information including OS version and host details |
 | Discovery | T1016 | Retrieves network configuration and active connection information |
 | Discovery | T1033 | Identifies current user and computer name |
 | Discovery | T1120 | Enumerates connected removable devices (USB drives) |
