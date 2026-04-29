@@ -28,7 +28,7 @@ After injection, the malware:
 
 | Attribute | Detail |
 |---|---|
-| **Name** | APT37 (also referenced as APT36 / Transparent Tribe in some intel) |
+| **Name** | APT37 |
 | **Aliases** | ScarCruft, Group123, Venus121, Inky Squid, Moldy Pisces, TA-RedAnt, Pearl Sleet, Red Eyes, ITG10 |
 | **Origin** | North Korea |
 | **Motivation** | State-Sponsored |
