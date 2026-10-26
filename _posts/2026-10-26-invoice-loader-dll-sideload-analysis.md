@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "WhatsApp Invoice Scam Meets a 41KB Signature: Inside a NetEase DLL Side-Loading Attack"
+title: "Hiding Malware Inside a Digital Signature: Analyzing a NetEase DLL Side-Loading Loader Delivered via WhatsApp Invoice"
 date: 2026-10-26
 categories: [others]
 tags: [malware-analysis, dll-side-loading, shellcode, rc4, threat-intelligence, dfir, windows, loader, whatsapp]
@@ -16,6 +16,8 @@ The chain abuses a legitimately code-signed NetEase crash-handler executable for
 ---
 
 ## The Lure
+
+![WhatsApp lure message](/assets/invoice2026/whatsapp_lure.png)
 
 | Item | Value |
 |---|---|
