@@ -1,15 +1,30 @@
 ---
 layout: post
-title: "Signed by NetEase, Loaded by an Invoice: Dissecting a DLL Side-Loading Chain with an RC4-Protected Loader"
+title: "WhatsApp Invoice Scam Meets a 41KB Signature: Inside a NetEase DLL Side-Loading Attack"
 date: 2026-10-26
 categories: [others]
-tags: [malware-analysis, dll-side-loading, shellcode, rc4, threat-intelligence, dfir, windows, loader]
-description: "Full static analysis of Invoice_20261026_Settlement_Report.zip: a signed NetEase EXE abused for DLL side-loading, a trojanized CrashHunter_PC3.dll with a shellcode loader hidden in the certificate table, RC4 decryption with a hardcoded key, and a staged payload download. Includes post-execution behaviour, IOCs, and MITRE ATT&CK mapping."
+tags: [malware-analysis, dll-side-loading, shellcode, rc4, threat-intelligence, dfir, windows, loader, whatsapp]
+description: "Full static analysis of a WhatsApp-delivered fake invoice (Invoice_20261026_Settlement_Report.zip): a signed NetEase EXE abused for DLL side-loading, a trojanized CrashHunter_PC3.dll with a shellcode loader hidden in the certificate table, RC4 decryption with a hardcoded key, and a staged payload download. Includes post-execution behaviour, IOCs, and MITRE ATT&CK mapping."
 ---
 
-A full static analysis of a malware sample delivered as a fake invoice archive (`Invoice_20261026_Settlement_Report.zip`). The chain abuses a legitimately code-signed NetEase crash-handler executable for DLL side-loading, a trojanized `CrashHunter_PC3.dll` whose entry point is patched to run a hidden shellcode loader stored inside the Authenticode certificate table, and an RC4-encrypted stage-2 bootstrap that retrieves the final payload over HTTPS.
+A full static analysis of a malware sample delivered over **WhatsApp** as a fake invoice archive. The message asks the victim to "share the attached Statement of Account with your Finance Manager" and to "open the attachment using a computer", a social-engineering nudge that guarantees the ZIP is extracted and opened on a Windows workstation rather than a phone.
+
+The chain abuses a legitimately code-signed NetEase crash-handler executable for DLL side-loading, a trojanized `CrashHunter_PC3.dll` whose entry point is patched to run a hidden shellcode loader stored inside the Authenticode certificate table, and an RC4-encrypted stage-2 bootstrap that retrieves the final payload over HTTPS.
 
 ![Extracting the sample](/assets/invoice2026/01_step1.png)
+
+---
+
+## The Lure
+
+| Item | Value |
+|---|---|
+| Delivery | WhatsApp, forwarded ZIP attachment |
+| Message | "Please share the attached Statement of Account with your Finance Manager for checking. For a complete view of the details, kindly open the attachment using a computer. Thank you." |
+| Archive | `Invoice_20261026_Settlement_Report.zip` (2,038,927 bytes) |
+| Contents | `2026102600987837.exe` (862,888 bytes) and `CrashHunter_PC3.dll` (3,376,576 bytes, hidden file attribute set) |
+
+The lure is targeted at a business workflow rather than a person: the attachment name looks like a generated document ID, the message references a finance process, and the "open using a computer" instruction exists only because the payload is a Windows executable. Nothing in the archive is an invoice. The theme exists to make the victim open it quickly and without suspicion.
 
 ---
 
@@ -19,8 +34,8 @@ The sample arrives as a ZIP archive named to look like a financial settlement re
 
 | File | Type | Size | Role |
 |---|---|---|---|
-| `2026102600987837.exe` | PE32+ GUI (x64) | 862 KB | Signed side-load host (legit NetEase `bugreport.exe`) |
-| `CrashHunter_PC3.dll` | PE32+ DLL (x64) | 3.3 MB | Trojanized loader (hidden file attribute set) |
+| `2026102600987837.exe` | PE32+ GUI (x64) | 862,888 bytes | Signed side-load host (legit NetEase `bugreport.exe`) |
+| `CrashHunter_PC3.dll` | PE32+ DLL (x64) | 3,376,576 bytes | Trojanized loader (hidden file attribute set) |
 
 Key findings:
 
