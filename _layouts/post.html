@@ -1,14 +1,6 @@
 ---
 layout: default
 ---
-<style>
-  /* Wider wrapper on post pages so the sidebar fits */
-  .wrapper { max-width: 1280px !important; }
-  @media (max-width: 1180px) {
-    .wrapper { max-width: 960px !important; }
-  }
-</style>
-<div class="post-with-sidebar">
 <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
@@ -41,9 +33,6 @@ layout: default
   <!-- Add Comments Section -->
   {%- include comments.html -%}
 </article>
-
-{%- include sidebar.html -%}
-</div>
 
 <!-- Lightbox -->
 <div class="lb-overlay" id="lb-overlay">
