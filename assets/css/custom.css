@@ -421,3 +421,153 @@ tr:nth-child(even) td { background-color: var(--bg2); }
   }
   .reading-time { margin-left: 0; }
 }
+
+/* ============================================================
+   MODERN LAYER
+   Glassmorphism, gradient accents, micro-interactions
+   ============================================================ */
+
+/* ── Smooth global feel ────────────────────────────────────── */
+
+html { scroll-behavior: smooth; }
+
+::selection {
+  background: rgba(122, 162, 247, 0.35);
+  color: inherit;
+}
+
+[data-theme="dark"] ::selection {
+  background: rgba(187, 154, 247, 0.4);
+}
+
+/* Scrollbar (WebKit) */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #7aa2f7, #bb9af7);
+  border-radius: 10px;
+  border: 2px solid var(--bg2);
+}
+
+/* ── Gradient underline hover for post titles ──────────────── */
+
+.post-preview h2 a {
+  background-image: linear-gradient(90deg, #7aa2f7, #bb9af7);
+  background-size: 0% 2px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 0.3s ease;
+  padding-bottom: 2px;
+}
+
+.post-preview h2 a:hover {
+  background-size: 100% 2px;
+}
+
+/* ── Glass post cards on the home list ─────────────────────── */
+
+.post-preview {
+  position: relative;
+  padding: 1.75rem 1.25rem !important;
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  background: var(--bg2);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease,
+              border-color 0.25s ease, background 0.25s ease;
+}
+
+.post-preview::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #7aa2f7, #bb9af7);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.post-preview:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(122, 162, 247, 0.45) !important;
+}
+
+.post-preview:hover::before { opacity: 1; }
+
+/* ── Hero glow behind matrix banner ────────────────────────── */
+
+.matrix-wrap {
+  box-shadow: 0 0 40px rgba(122, 162, 247, 0.12);
+}
+
+/* ── Post content link underline animation ─────────────────── */
+
+.post-content p a,
+.post-content li a {
+  background-image: linear-gradient(90deg, var(--accent), var(--accent2));
+  background-size: 0% 1.5px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 0.25s ease;
+}
+
+.post-content p a:hover,
+.post-content li a:hover {
+  background-size: 100% 1.5px;
+}
+
+/* ── Image hover lift in posts ─────────────────────────────── */
+
+.post-content img:hover {
+  border-color: rgba(122, 162, 247, 0.5);
+  box-shadow: 0 6px 24px rgba(122, 162, 247, 0.25);
+}
+
+/* ── Section headings with accent bar ──────────────────────── */
+
+.post-content h2 {
+  position: relative;
+  padding-left: 0.85rem;
+}
+
+.post-content h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  bottom: 0.15em;
+  width: 4px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #7aa2f7, #bb9af7);
+}
+
+/* ── Back to top button polish ─────────────────────────────── */
+
+#back-to-top {
+  background: linear-gradient(135deg, #7aa2f7, #bb9af7) !important;
+  color: #1a1b2e !important;
+  border: none !important;
+  box-shadow: 0 4px 16px rgba(122, 162, 247, 0.4);
+}
+
+#back-to-top:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(187, 154, 247, 0.5);
+}
+
+/* ── Entrance animation ────────────────────────────────────── */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.post-preview {
+  animation: fadeUp 0.5s ease both;
+}
+
+.post-preview:nth-child(2) { animation-delay: 0.05s; }
+.post-preview:nth-child(3) { animation-delay: 0.1s; }
+.post-preview:nth-child(4) { animation-delay: 0.15s; }

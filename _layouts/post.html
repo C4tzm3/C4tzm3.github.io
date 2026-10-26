@@ -33,3 +33,42 @@ layout: default
   <!-- Add Comments Section -->
   {%- include comments.html -%}
 </article>
+
+<!-- Lightbox -->
+<div class="lb-overlay" id="lb-overlay">
+  <button class="lb-close" id="lb-close">&times;</button>
+  <img class="lb-img" id="lb-img" src="" alt="">
+  <span class="lb-hint">scroll to zoom &nbsp;&bull;&nbsp; click outside or press Esc to close</span>
+</div>
+<script>
+(function(){
+  var overlay = document.getElementById('lb-overlay');
+  var lbImg   = document.getElementById('lb-img');
+  var scale   = 1;
+
+  function open(src, alt) {
+    lbImg.src = src; lbImg.alt = alt || '';
+    scale = 1; lbImg.style.transform = 'scale(1)';
+    overlay.classList.add('lb-open');
+  }
+  function close() {
+    overlay.classList.remove('lb-open');
+    lbImg.src = '';
+  }
+
+  document.querySelectorAll('.post-content img').forEach(function(el) {
+    el.addEventListener('click', function() { open(el.src, el.alt); });
+  });
+
+  document.getElementById('lb-close').addEventListener('click', close);
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) close(); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close(); });
+
+  overlay.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    scale += e.deltaY < 0 ? 0.15 : -0.15;
+    scale = Math.min(Math.max(scale, 0.3), 6);
+    lbImg.style.transform = 'scale(' + scale + ')';
+  }, { passive: false });
+})();
+</script>

@@ -79,4 +79,29 @@
 [data-theme="dark"] table th        { background-color:#24283b !important; color:#c0caf5 !important; border-color:#292e42 !important; }
 [data-theme="dark"] table td        { background-color:#1a1b2e !important; color:#c0caf5 !important; border-color:#292e42 !important; }
 [data-theme="dark"] tr:nth-child(even) td { background-color:#1f2335 !important; }
+
+/* ── Lightbox ──────────────────────────────────────── */
+.post-content img { cursor:zoom-in; display:block; margin:1rem auto; max-width:100%; }
+.lb-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.88); z-index:9999;
+  align-items:center; justify-content:center;
+}
+.lb-overlay.lb-open { display:flex; }
+.lb-img {
+  max-width:92vw; max-height:92vh; object-fit:contain;
+  border-radius:6px; transform-origin:center;
+  transition:transform .1s ease; cursor:default;
+  box-shadow:0 8px 40px rgba(0,0,0,.6);
+}
+.lb-close {
+  position:fixed; top:16px; right:20px;
+  color:#fff; font-size:2rem; cursor:pointer;
+  background:none; border:none; line-height:1; opacity:.8;
+}
+.lb-close:hover { opacity:1; }
+.lb-hint {
+  position:fixed; bottom:14px; left:50%; transform:translateX(-50%);
+  color:rgba(255,255,255,.5); font-size:.75rem; pointer-events:none;
+}
 </style>
