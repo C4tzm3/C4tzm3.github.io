@@ -17,7 +17,7 @@ The chain abuses a legitimately code-signed NetEase crash-handler executable for
 
 ## The Lure
 
-![WhatsApp lure message](/assets/invoice2026/whatsapp_lure.png)
+![WhatsApp lure message](/assets/invoice2026/whatsapp_lure.jpg)
 
 | Item | Value |
 |---|---|
