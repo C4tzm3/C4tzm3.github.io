@@ -169,7 +169,7 @@ Decoded: https://bmafhahl.eu.cc/files/awhfos.eu.cc.bin
 
 ### 6. Stage 3: Retrieving and Decrypting the Final Payload
 
-Since the analysis is static-only, the staging server was contacted manually with `curl` (read-only retrieval, nothing executed). The first attempt returned an unexpected surprise: the corporate **Cloudflare Gateway** already blocks `bmafhahl[.]eu[.]cc` at the DNS level, so the request returned a block page instead of the payload. Resolving the real host via DNS-over-HTTPS gave the origin IP `103.212.97.252`, and a direct fetch with a patched `--resolve` returned the actual file.
+Since the analysis is static-only, the staging server was contacted manually with `curl` (read-only retrieval, nothing executed). Public DNS-over-HTTPS resolvers gave the origin IP `103.212.97.252`, and a direct fetch returned the file.
 
 ```
 File        : awhfos.eu.cc.bin
@@ -211,20 +211,22 @@ PE compile timestamp       : 2026-10-12
 ole32;oleaut32;wininet;mscoree;shell32
 ```
 
-The embedded x64 PE (sections `.text`, `.rdata`, `.rsrc`; ImageBase `0x3D0000`) is an MSVC-linked implant. The loader keeps parts of its headers and sections encrypted at rest and reconstructs them in memory, which is why the section table is only partially readable after decryption. Recovered capability strings map out its feature set:
+The embedded x64 PE (sections `.text`, `.rdata`, `.rsrc`; ImageBase `0x3D0000`) is an MSVC-linked implant. The loader keeps parts of its headers, sections, and string table encrypted at rest and reconstructs them in memory, so some strings are cut off mid-word in the on-disk form (`IsDebugge` really refers to `IsDebuggerPresent`, but the tail bytes only exist after runtime decryption). The strings below are reproduced exactly as they appear in the decrypted container:
 
-| Category | Recovered strings |
+| Category | Recovered strings (verbatim) |
 |---|---|
-| C2 networking | `WS2_32.dll`, `inet_ntop`, `WSAIoctl`, `StringToAddressA`, `Listen`, `Attach SOCKET`, `Send Data Fail`, `SSL en...`, `CNNID: %Iu` |
+| C2 networking | `WS2_32.dll`, `inet_ntop`, `WSAIoctl`, `StringToAddressA`, `Listen`, `Attach SOCKET`, `Send D` (truncated), `SSL en` (truncated), `CNNID: %Iu` |
 | COM | `CoInitialize`, `SetProxy`, `Blanket` (`CoSetProxyBlanket`), `OLEAUT` |
-| Anti-analysis | `IsDebugge...` (`IsDebuggerPresent`), `Terminat...Excep...`, `RtlVirtualUnwin...` |
-| System | `numNetwork...`, `WaitForMultipleObjects`, `DispatchM...`, `QueryPer...`, `HeapAlloc` |
-| Registry | `Microsoft\Cry...graphy` (`Software\Microsoft\Cryptography`), `...SOFTW...ARE\...RRCfg` |
+| Anti-analysis | `IsDebugge` (truncated, `IsDebuggerPresent`), `RtlVirtualUnwinH` (truncated, `RtlVirtualUnwind`) |
+| System | `numNetwork` (truncated), `WaitForM` (truncated, `WaitForMultipleObjects`), `DispatchM(` (truncated), `QueryPer` (truncated), `HeapAlloc` |
+| Registry | `Microsoft\Cry` + `graphy` (split by encryption, `Software\Microsoft\Cryptography`), `LSOFTW` + `ARE\RRCfg` (split, `SOFTWARE\...RRCfg`) |
 | Encoding | Full base64 alphabets (standard and custom) |
 
-The presence of `mscoree` in the load list and `__clr...`/`managed v...` runtime strings indicates .NET interaction capability. Combined with the socket-based command channel (`CNNID:` command identifiers), the implant is consistent with a **full backdoor rather than a simple downloader**: it enumerates network interfaces, maintains an SSL-protected command connection, and supports in-memory execution paths (`RtlVirtualUnwind`, thread management).
+The truncation itself is a deliberate property of the build: because parts of the string table stay encrypted until execution, a static `strings` pass only reveals fragments, which complicates signature-based detection.
 
-This is also where the earlier observed debug artefact fits in: stage 2 hex-dumps the downloaded blob to `C:\Users\Public\Documents\1.txt` before execution, a leftover development routine that survives in the shipped build.
+The presence of `mscoree` in the load list and `__clr`/`managed v` runtime fragments indicates .NET interaction capability. Combined with the socket-based command channel (`CNNID:` command identifiers), the implant is consistent with a **full backdoor rather than a simple downloader**: it enumerates network interfaces, maintains an SSL-protected command connection, and supports in-memory execution paths (`RtlVirtualUnwind`, thread management).
+
+One additional artefact deserves clarification: `C:\Users\Public\Documents\1.txt`. This file does not exist on the staging server, so there is nothing to download; it is **written by stage 2 on the victim's machine** at runtime. Stage 2 contains a leftover debug routine that hex-dumps the downloaded stage-3 blob to this path before executing it. In an infected host, `1.txt` would simply contain a hexadecimal dump of `awhfos.eu.cc.bin` (the file retrieved above), which makes it a high-value forensic artefact: its content matches the staging server's file byte for byte.
 
 ### 7. What Happens After the Victim Runs It
 
