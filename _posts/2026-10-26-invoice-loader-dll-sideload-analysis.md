@@ -4,7 +4,7 @@ title: "Hiding Malware Inside a Digital Signature: Analyzing a NetEase DLL Side-
 date: 2026-10-26
 categories: [others]
 tags: [malware-analysis, dll-side-loading, shellcode, rc4, threat-intelligence, dfir, windows, loader, whatsapp]
-description: "Full static analysis of a WhatsApp-delivered fake invoice (Invoice_20261026_Settlement_Report.zip): a signed NetEase EXE abused for DLL side-loading, a trojanized CrashHunter_PC3.dll with a shellcode loader hidden in the certificate table, RC4 decryption with a hardcoded key, and a staged payload download. Includes post-execution behaviour, IOCs, and MITRE ATT&CK mapping."
+description: "Full static analysis of a WhatsApp-delivered fake invoice (Invoice_20261026_Settlement_Report.zip): a signed NetEase EXE abused for DLL side-loading, a trojanized CrashHunter_PC3.dll with a shellcode loader hidden in the certificate table, RC4 decryption with a hardcoded key, and retrieval plus decryption of the stage-3 payload, including its custom ARX block cipher and socket-based backdoor. Includes IOCs and MITRE ATT&CK mapping."
 ---
 
 A full static analysis of a malware sample delivered over **WhatsApp** as a fake invoice archive. The message asks the victim to "share the attached Statement of Account with your Finance Manager" and to "open the attachment using a computer", a social-engineering nudge that guarantees the ZIP is extracted and opened on a Windows workstation rather than a phone.
@@ -45,8 +45,8 @@ Key findings:
 - The DLL entry point is patched: the original `DllMain` runs first, then execution flows into a rogue `.ljgyu` section containing position-independent shellcode.
 - The shellcode is a **custom in-memory loader**: it resolves APIs by ROR13-add export hashing, reads the running EXE from disk, locates the `CA FE BA BE` marker inside the Security (certificate table) directory, and **RC4-decrypts a 30,368-byte stage-2 bootstrap with the hardcoded key `AtkExEmbedKey2026`**.
 - The Authenticode certificate table is **excluded from the signature hash**, so the appended encrypted payload does not break the signature. Most scanners treat the cert table as signature data and skip it.
-- Stage 2 carries an `SCURLTPL` config block with an XOR-obfuscated (single-byte key `0x5A`) staging URL: `hxxps://bmafhahl[.]eu[.]cc/files/awhfos[.]eu[.]cc[.]bin`. It downloads the final payload, decrypts it with the same RC4 key, and executes it entirely in memory.
-- Stage 3 was **not retrieved** during this analysis (no detonation, no C2 contact), so the final implant family remains unconfirmed.
+- Stage 2 carries an `SCURLTPL` config block with an XOR-obfuscated (single-byte key `0x5A`) staging URL: `hxxps://bmafhahl[.]eu[.]cc/files/awhfos[.]eu[.]cc[.]bin`. It downloads the final payload and executes it entirely in memory.
+- Stage 3 was **retrieved live from the staging server** and decrypted statically. It is a 119,938-byte position-independent loader wrapped around a partially encrypted x64 PE implant with socket-based C2, anti-debug checks, and COM usage. The container is **not** RC4-encrypted: it uses a custom 16-round ARX block cipher with a 16-byte counter key.
 
 ---
 
@@ -167,17 +167,76 @@ Encoded: 322e2e2a2960757538373b3c323b3236743f2f743939753c33363f29753b2d323c35297
 Decoded: https://bmafhahl.eu.cc/files/awhfos.eu.cc.bin
 ```
 
-### 6. What Happens After the Victim Runs It
+### 6. Stage 3: Retrieving and Decrypting the Final Payload
+
+Since the analysis is static-only, the staging server was contacted manually with `curl` (read-only retrieval, nothing executed). The first attempt returned an unexpected surprise: the corporate **Cloudflare Gateway** already blocks `bmafhahl[.]eu[.]cc` at the DNS level, so the request returned a block page instead of the payload. Resolving the real host via DNS-over-HTTPS gave the origin IP `103.212.97.252`, and a direct fetch with a patched `--resolve` returned the actual file.
+
+```
+File        : awhfos.eu.cc.bin
+Size        : 119,938 bytes
+SHA256      : 312896a21b25f8b5f1eee71131e9933dfdaba566bb8e20f2166a62121adf6175
+MD5         : 9a9dcad691de57ba22af0ecc9ceca513
+Entropy     : 7.96 bits/byte (encrypted container)
+```
+
+Two infrastructure details are worth noting. First, the host presents a **self-signed certificate** under issuer `Gateway CA - Cloudflare Managed G2` with a validity window of only **8 days** (issued 2026-10-26, the same day the sample was built). Short-lived TLS certificates are typical for malware staging infrastructure. Second, the file is served over HTTPS from a free `eu.cc` subdomain.
+
+**Structure of the downloaded blob.** The file is not a PE. It is a position-independent loader blob:
+
+| Offset | Size | Content |
+|---|---|---|
+| 0x0 | 5 | `CALL +0x1A266` stub (`E8 66 A2 01 00`) |
+| 0x5 | 106,918 | Encrypted payload container (entropy 7.95) |
+| 0x1A26B | ~13,020 | Plaintext x64 runtime: struct parsing, PEB-walking API resolver, command-line splitter |
+
+The `CALL` at offset 0 transfers control to the runtime at `0x1A26B`, and the `pop rcx` that follows hands it a pointer to the encrypted container. The runtime treats the container as a structure: offset `+0x234` selects the decrypt path, `+0x238` gates execution, `+0x240` holds a semicolon-separated command line, and the first dword is the container size.
+
+**The cipher is not RC4.** Stage 2 uses the same RC4 key as stage 1 (`AtkExEmbedKey2026`), so that was the first decryption attempt. It produced garbage. Disassembling the runtime revealed a custom block cipher at `+0x1D04E`:
+
+- A 16-byte key stored inside the container acts as a **block counter**: after every 16-byte block the key is incremented by one (big-endian, with carry), forcing a fresh keystream per block
+- Each block is expanded through a **16-round ARX permutation** (rotate 5/8/16/7/13/16 with modular adds and XORs) over the four 32-bit state words
+- The state is also folded with a second 16-byte blob from the container header before being XORed into the ciphertext
+
+Reimplementing the 40 lines of arithmetic in Python decrypts the full 106,918-byte container:
+
+```
+Decrypted container SHA256 : b273b96cfe72050acbb48b578591b57d1625d4f50ad43010dea64f29418e26ca
+Carved x64 PE SHA256       : ef3b5575279d6e7f75b311e5b6864246ac65caf584d1edc387da813fc3fa7aec
+PE compile timestamp       : 2026-10-12
+```
+
+**What is inside.** The decrypted container starts with a semicolon-separated list of libraries the implant loads dynamically:
+
+```
+ole32;oleaut32;wininet;mscoree;shell32
+```
+
+The embedded x64 PE (sections `.text`, `.rdata`, `.rsrc`; ImageBase `0x3D0000`) is an MSVC-linked implant. The loader keeps parts of its headers and sections encrypted at rest and reconstructs them in memory, which is why the section table is only partially readable after decryption. Recovered capability strings map out its feature set:
+
+| Category | Recovered strings |
+|---|---|
+| C2 networking | `WS2_32.dll`, `inet_ntop`, `WSAIoctl`, `StringToAddressA`, `Listen`, `Attach SOCKET`, `Send Data Fail`, `SSL en...`, `CNNID: %Iu` |
+| COM | `CoInitialize`, `SetProxy`, `Blanket` (`CoSetProxyBlanket`), `OLEAUT` |
+| Anti-analysis | `IsDebugge...` (`IsDebuggerPresent`), `Terminat...Excep...`, `RtlVirtualUnwin...` |
+| System | `numNetwork...`, `WaitForMultipleObjects`, `DispatchM...`, `QueryPer...`, `HeapAlloc` |
+| Registry | `Microsoft\Cry...graphy` (`Software\Microsoft\Cryptography`), `...SOFTW...ARE\...RRCfg` |
+| Encoding | Full base64 alphabets (standard and custom) |
+
+The presence of `mscoree` in the load list and `__clr...`/`managed v...` runtime strings indicates .NET interaction capability. Combined with the socket-based command channel (`CNNID:` command identifiers), the implant is consistent with a **full backdoor rather than a simple downloader**: it enumerates network interfaces, maintains an SSL-protected command connection, and supports in-memory execution paths (`RtlVirtualUnwind`, thread management).
+
+This is also where the earlier observed debug artefact fits in: stage 2 hex-dumps the downloaded blob to `C:\Users\Public\Documents\1.txt` before execution, a leftover development routine that survives in the shipped build.
+
+### 7. What Happens After the Victim Runs It
 
 Putting the whole post-execution sequence in order:
 
 1. **Process start**: the victim double-clicks the signed EXE. No window or prompt indicates anything unusual; the process is a trusted NetEase crash reporter.
 2. **DLL load**: the EXE loads `CrashHunter_PC3.dll` from its own folder. The patched entry point runs the real `DllMain` first, so the crash-handler SDK initializes normally and the process remains stable.
 3. **Loader thread**: the `.ljgyu` stub resolves seven APIs by hashing, reads the EXE from disk, and pulls the 30 KB encrypted blob out of the certificate table. No file other than the EXE itself is touched.
-4. **Stage 2 in memory**: the RC4-decrypted bootstrap decodes the staging URL, downloads `awhfos.eu.cc.bin` over HTTPS, decrypts it with the same key, allocates RWX memory, and calls into it. A leftover debug routine hex-dumps the download to `C:\Users\Public\Documents\1.txt`, which is a useful host artefact for IR.
-5. **Stage 3**: never written to disk as a file. Its family and objective (RAT, stealer, further loader) are unconfirmed because the C2 was not contacted during this static analysis.
+4. **Stage 2 in memory**: the RC4-decrypted bootstrap decodes the staging URL, downloads `awhfos.eu.cc.bin` over HTTPS, allocates RWX memory, and calls into the blob's `CALL` stub. A leftover debug routine hex-dumps the download to `C:\Users\Public\Documents\1.txt`, which is a useful host artefact for IR.
+5. **Stage 3 in memory**: the blob's runtime decrypts its own container with the custom ARX cipher, loads `ole32`, `oleaut32`, `wininet`, `mscoree`, and `shell32`, and runs the embedded backdoor entirely from memory. The implant never touches disk as a PE file.
 
-### 7. Other Malicious Files Found
+### 8. Other Malicious Files Found
 
 The archive contains exactly two files, both analysed:
 
@@ -196,8 +255,9 @@ No additional droppers, batch files, or registry changes are present in the arch
 | Execution | User Execution: Malicious File | T1204.002 |
 | Defense Evasion | DLL Side-Loading | T1574.002 |
 | Defense Evasion | Code Signing: abuse of trusted signed binary | T1553.002 |
-| Defense Evasion | Obfuscated Files or Information (RC4, XOR 0x5A, cert-table payload) | T1027 |
+| Defense Evasion | Obfuscated Files or Information (RC4, XOR 0x5A, cert-table payload, custom ARX cipher) | T1027 |
 | Defense Evasion | Dynamic API Resolution (ROR13 hashing) | T1027.007 |
+| Discovery | Debugger Evasion (IsDebuggerPresent in the implant) | T1622 |
 | Execution | In-memory shellcode execution | T1059 / T1620 |
 | Command and Control | Ingress Tool Transfer (HTTPS download of stage 3) | T1105 |
 | Command and Control | Encrypted Channel | T1573 |
@@ -214,6 +274,9 @@ No additional droppers, batch files, or registry changes are present in the arch
 | `2026102600987837.exe` | `ba5a8e19125ef6f8b3ac52b1f2a8758cda206fd76ea73d401706659c67c4b531` |
 | `CrashHunter_PC3.dll` | `0cc5e6f9fc0d7844c174d9b25ed84633e2afacaa2ef95b6e2f456062985caa8e` |
 | Decrypted stage-2 shellcode | `3a0ead090043b333ee5718376a8215c2ef8863168b3a2d0a0460b6d0bab5482b` |
+| Downloaded stage-3 blob (`awhfos.eu.cc.bin`) | `312896a21b25f8b5f1eee71131e9933dfdaba566bb8e20f2166a62121adf6175` |
+| Decrypted stage-3 container | `b273b96cfe72050acbb48b578591b57d1625d4f50ad43010dea64f29418e26ca` |
+| Carved stage-3 x64 PE implant | `ef3b5575279d6e7f75b311e5b6864246ac65caf584d1edc387da813fc3fa7aec` |
 
 ### Network
 
@@ -221,6 +284,8 @@ No additional droppers, batch files, or registry changes are present in the arch
 |---|---|
 | URL | `hxxps://bmafhahl[.]eu[.]cc/files/awhfos[.]eu[.]cc[.]bin` (staging) |
 | Domain | `bmafhahl[.]eu[.]cc` |
+| IP | `103.212.97.252` (staging origin host) |
+| TLS | Self-signed certificate, issuer `Gateway CA - Cloudflare Managed G2`, SHA256 fingerprint `DD:EE:AF:FD:3A:12:53:A1:33:B5:40:87:22:FE:27:5E:B8:44:9F:D9:BA:21:5B:92:BC:22:20:CD:01:FB:37:07`, 8-day validity |
 | Domain | `appdump.nie.easebar.com` (camouflage upload endpoint) |
 | Domain | `appdump.nie.netease.com` (camouflage upload endpoint) |
 
@@ -229,6 +294,8 @@ No additional droppers, batch files, or registry changes are present in the arch
 - Rogue PE section name: `.ljgyu` in the DLL
 - RC4 key string: `AtkExEmbedKey2026` (stack-assembled)
 - Payload config marker: `SCURLTPL`; blob marker `CA FE BA BE` inside the certificate table
+- Stage-3 container load list: `ole32;oleaut32;wininet;mscoree;shell32` (semicolon-separated, passed as a command line)
+- Stage-3 implant artifacts: `CNNID:` command identifier prefix, mutex/event style strings under `Local\EVHS_`, UAC bypass string `Elevation:Administrator!new:{3E5FC7F9-9A51-4367-9063-A120244FBEC}` (CMSTPLUA COM elevation in stage 2)
 - Oversized certificate table: 41 KB vs the normal 6 to 12 KB
 - Debug artefact path: `C:\Users\Public\Documents\1.txt`
 - Filename pattern: `Invoice_<YYYYMMDD>_Settlement_Report.zip` with a 16-digit numeric EXE name
@@ -283,8 +350,8 @@ A notable builder detail: the hardcoded key contains **"2026"**, likely a year-b
 
 ## Conclusion
 
-This sample demonstrates the continued abuse of **validly signed legitimate software** as a side-loading anchor, combined with a modular in-memory loader that never writes the final payload to disk. The certificate-table hiding trick is effective against naive scanning but trivially detectable by size. The use of a single hardcoded RC4 key (`AtkExEmbedKey2026`) across stages made static decryption straightforward once the `CA FE BA BE` marker was located, a reminder that even custom crypters often rely on reusable keys, enabling full payload recovery without any dynamic detonation.
+This sample demonstrates the continued abuse of **validly signed legitimate software** as a side-loading anchor, combined with a modular in-memory loader that never writes the final payload to disk. The certificate-table hiding trick is effective against naive scanning but trivially detectable by size. The reuse of the hardcoded RC4 key (`AtkExEmbedKey2026`) made stage-2 recovery straightforward once the `CA FE BA BE` marker was located, while the final implant required disassembling its custom ARX block cipher, a reminder that a determined analyst can recover even freshly rolled crypto without any dynamic detonation. The final payload turns out to be a full socket-based backdoor rather than yet another downloader, which raises the practical impact of a single user opening a WhatsApp "invoice" on a workstation.
 
 ---
 
-*Sample analyzed in a static-only environment on macOS. Nothing was executed and the C2 was not contacted; post-execution details are inferred from disassembly of the loader and stage-2 bootstrap.*
+*Sample analyzed in a static-only environment on macOS. Nothing was executed. The staging server was contacted once with curl for a read-only retrieval of the stage-3 blob, which was then decrypted and dissected statically; no payload was ever run.*
