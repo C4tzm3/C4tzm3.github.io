@@ -171,6 +171,8 @@ Decoded: https://bmafhahl.eu.cc/files/awhfos.eu.cc.bin
 
 Since the analysis is static-only, the staging server was contacted manually with `curl` (read-only retrieval, nothing executed). Public DNS-over-HTTPS resolvers gave the origin IP `103.212.97.252`, and a direct fetch returned the file.
 
+![Retrieving awhfos.eu.cc.bin from the staging origin](/assets/invoice2026/08_stage3_retrieval.png)
+
 ```
 File        : awhfos.eu.cc.bin
 Size        : 119,938 bytes
@@ -198,6 +200,8 @@ The `CALL` at offset 0 transfers control to the runtime at `0x1A26B`, and the `p
 - The state is also folded with a second 16-byte blob from the container header before being XORed into the ciphertext
 
 Reimplementing the 40 lines of arithmetic in Python decrypts the full 106,918-byte container:
+
+![Decrypting the stage-3 container with the custom ARX cipher](/assets/invoice2026/09_stage3_decrypt.png)
 
 ```
 Decrypted container SHA256 : b273b96cfe72050acbb48b578591b57d1625d4f50ad43010dea64f29418e26ca
