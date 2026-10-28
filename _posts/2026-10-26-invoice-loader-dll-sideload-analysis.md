@@ -11,6 +11,14 @@ A full static analysis of a malware sample delivered over **WhatsApp** as a fake
 
 The chain abuses a legitimately code-signed NetEase crash-handler executable for DLL side-loading, a trojanized `CrashHunter_PC3.dll` whose entry point is patched to run a hidden shellcode loader stored inside the Authenticode certificate table, and an RC4-encrypted stage-2 bootstrap that retrieves the final payload over HTTPS.
 
+**In plain language, for readers who want the short version:**
+
+1. Someone sent a fake "invoice" over WhatsApp. Opening it on a Windows PC silently installs nothing visible: the malware hides inside files that look completely legitimate, one of which even carries a valid digital signature from a real company (NetEase, a large Chinese gaming company).
+2. The malware's trick: it hides its own code in the part of a signed file that Windows does not check when verifying the signature. The signature still shows as valid.
+3. It then downloads the final payload from the internet and runs it entirely in memory, so antivirus finds no malware file on disk.
+4. The final payload is a full backdoor: an attacker who sent this "invoice" can potentially see the screen, steal files, and control the machine remotely.
+5. If you received a similar WhatsApp "invoice", do not open it on a Windows PC. If you already did, check the IOCs section below.
+
 ![Extracting the sample](/assets/invoice2026/01_step1.png)
 
 ---
@@ -103,7 +111,10 @@ Notable PE characteristics:
 
 ### 3. The .ljgyu Loader: PEB Walking and API Hashing
 
-The shellcode implements a classic position-independent loader with no imports and no readable strings.
+The shellcode implements a classic position-independent loader with no imports and no readable strings. Two techniques do the heavy lifting, and both are standard malware tradecraft:
+
+- **PEB walking**: instead of calling `GetModuleHandle` (which antivirus tools and EDRs monitor), the shellcode reads the Windows Process Environment Block (PEB), the operating system's own in-memory list of loaded modules, directly, to find where kernel32.dll lives in memory without asking the operating system.
+- **API hashing (ROR13)**: instead of storing function names like `CreateFileA` as readable text (which a strings scan would reveal), the shellcode stores only a numeric hash of each name. At runtime it walks kernel32's export table, hashes every function name the same way, and compares against the stored value. Same result, but nothing suspicious appears in the file.
 
 **Step 1: PEB walk** (`gs:[0x60]` -> `InMemoryOrderModuleList`) to locate `KERNEL32`:
 
@@ -196,7 +207,7 @@ The `CALL` at offset 0 transfers control to the runtime at `0x1A26B`, and the `p
 **The cipher is not RC4.** Stage 2 uses the same RC4 key as stage 1 (`AtkExEmbedKey2026`), so that was the first decryption attempt. It produced garbage. Disassembling the runtime revealed a custom block cipher at `+0x1D04E`:
 
 - A 16-byte key stored inside the container acts as a **block counter**: after every 16-byte block the key is incremented by one (big-endian, with carry), forcing a fresh keystream per block
-- Each block is expanded through a **16-round ARX permutation** (rotate 5/8/16/7/13/16 with modular adds and XORs) over the four 32-bit state words
+- Each block is expanded through a **16-round ARX permutation** over four 32-bit state words. ARX stands for Addition, Rotation, XOR: the three cheap operations the cipher repeats in loops, the same building blocks used by well-known ciphers like ChaCha20
 - The state is also folded with a second 16-byte blob from the container header before being XORed into the ciphertext
 
 Reimplementing the 40 lines of arithmetic in Python decrypts the full 106,918-byte container:
@@ -330,6 +341,18 @@ rule InvoiceLoader_CrashHunter_Sideload
 - Any signed NetEase binary (original filename `bugreport.exe`) running from Downloads, Temp, or a user-extracted folder and loading `CrashHunter_PC3.dll` from the same path. Legit NetEase games run from their install directory.
 - Signed PE whose Security directory exceeds ~24 KB or contains data after the PKCS#7 chain.
 - Outbound HTTPS from a signed process to free `eu.cc` subdomains shortly after process start.
+
+---
+
+## Recommended Actions
+
+For defenders and IT teams, in order of priority:
+
+1. **Block and flag the network indicators** listed in the IOCs: the domain `bmafhahl[.]eu[.]cc`, the IP `103.212.97.252`, and the URL pattern. Monitor DNS logs for any host that resolved the domain.
+2. **Search endpoints for `C:\Users\Public\Documents\1.txt`**. If it exists on a workstation, that machine almost certainly ran this loader, and the file content is a hex dump that can be matched against the stage-3 hash in the IOC table.
+3. **Alert on signed binaries with oversized certificate tables** (over ~24 KB). This costs almost nothing to deploy and defeats the hiding trick in this campaign and any copycat.
+4. **Warn finance and admin staff** about invoice-themed files sent over WhatsApp or personal messaging apps. The lure here targeted a business workflow, and the "open using a computer" instruction is the tell: real invoicing portals do not need users to download and double-click anything.
+5. **Do not rely on signature validation alone**: a file showing a valid NetEase signature does not mean it is clean, as demonstrated above.
 
 ---
 
