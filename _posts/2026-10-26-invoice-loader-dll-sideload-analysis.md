@@ -58,7 +58,18 @@ Key findings:
 
 ---
 
-## Attack Flow
+## Campaign Timeline
+
+The dates recovered across the analysis, in chronological order, show an actively maintained operation rather than recycled tooling: the final backdoor was compiled two weeks before delivery, and the staging infrastructure was issued the same day the lure was sent.
+
+| Date | Event |
+|---|---|
+| 2025-04-11 | `CrashHunter_PC3.dll` compiled (trojanized build of the NetEase crash-handler SDK) |
+| 2026-08-11 | `2026102600987837.exe` compiled (side-load host) |
+| 2026-08-25 | EXE code-signed with the valid NetEase / DigiCert certificate |
+| 2026-10-12 | Stage-3 x64 backdoor compiled |
+| 2026-10-26 | Staging TLS certificate issued (`bmafhahl[.]eu[.]cc`, 8-day validity) |
+| 2026-10-26 | WhatsApp lure delivered; ZIP filename stamped with the same date |
 
 ![Attack flow](/assets/invoice2026/attack_flow.png)
 
